@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Permission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
 use Yajra\DataTables\Facades\DataTables;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -23,7 +24,7 @@ class PermissionController extends Controller
     {
         abort_if(Gate::denies('permission_access'), Response::HTTP_FORBIDDEN, 'Forbidden');
 
-        if($request->ajax()){
+        if($request->ajax() && !$request->header('X-Inertia')){
             $permissions = Permission::all();
             return DataTables::of($permissions)
                     ->addColumn('action', function($permissions){
@@ -39,7 +40,7 @@ class PermissionController extends Controller
                     })
                     ->toJson();
         }
-        return view('pages.admin.permission.index');
+        return Inertia::render('Admin/Permissions/Index', ['permissions' => Permission::paginate(10)]);
     }
 
     /**
@@ -50,7 +51,7 @@ class PermissionController extends Controller
     public function create()
     {
         abort_if(Gate::denies('permission_create'), Response::HTTP_FORBIDDEN, 'Forbidden');
-        return view('pages.admin.permission.create');
+        return Inertia::render('Admin/Permissions/Create');
     }
 
     /**
@@ -75,7 +76,7 @@ class PermissionController extends Controller
         foreach ($request->title as $key => $value) {
             Permission::create(['title' => $value]);
         }
-        return redirect()->route('admin.permissions.index')->withSuccess('Data berhasil ditambahkan!');
+        return redirect()->route('admin.permissions.index')->with('success', 'Data berhasil ditambahkan!');
     }
 
     /**
@@ -87,7 +88,7 @@ class PermissionController extends Controller
     public function edit(Permission $permission)
     {
         abort_if(Gate::denies('permission_edit'), Response::HTTP_FORBIDDEN, 'Forbidden');
-        return view('pages.admin.permission.edit', compact('permission'));
+        return Inertia::render('Admin/Permissions/Edit', ['permission' => $permission]);
     }
 
     /**
@@ -111,7 +112,7 @@ class PermissionController extends Controller
             ]
         );
         Permission::create($request->all());
-        return redirect()->route('admin.permissions.index')->withSuccess('Data berhasil diubah!');
+        return redirect()->route('admin.permissions.index')->with('success', 'Data berhasil diubah!');
     }
 
     /**
@@ -125,6 +126,6 @@ class PermissionController extends Controller
         abort_if(Gate::denies('permission_delete'), Response::HTTP_FORBIDDEN, 'Forbidden');
         $permission->levels()->detach();
         $permission->delete();
-        return redirect()->route('admin.permissions.index')->withSuccess('Data berhasil dihapus!');
+        return redirect()->route('admin.permissions.index')->with('success', 'Data berhasil dihapus!');
     }
 }

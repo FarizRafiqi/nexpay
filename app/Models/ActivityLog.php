@@ -21,6 +21,11 @@ class ActivityLog extends Model
      * @param  \DateTimeInterface  $date
      * @return string
      */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'id_user');
+    }
+
     protected function serializeDate(DateTimeInterface $date)
     {
         return $date->format('Y-m-d H:i:s');

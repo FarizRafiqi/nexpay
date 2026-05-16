@@ -6,6 +6,9 @@ use App\DataTables\TaxRateDataTable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\MassDestroyTaxRateRequest;
 use App\Models\TaxRate;
+use App\Models\TaxType;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -19,7 +22,7 @@ class TaxRateController extends Controller
     public function index(TaxRateDataTable $dataTable)
     {
         abort_if(Gate::denies("tax_access"), Response::HTTP_FORBIDDEN, "Forbidden");
-        return $dataTable->render('pages.admin.tax.tax-rate.index');
+        return Inertia::render('Admin/TaxRates/Index', ['taxRates' => TaxRate::with('taxType')->get()]);
     }
 
     /**
@@ -28,10 +31,22 @@ class TaxRateController extends Controller
      * @param  \App\Models\TaxRate  $taxRate
      * @return \Illuminate\Http\Response
      */
+    public function edit(TaxRate $taxRate)
+    {
+        abort_if(Gate::denies("tax_access"), Response::HTTP_FORBIDDEN, "Forbidden");
+        return back()->with('warning', 'Edit tarif pajak belum tersedia');
+    }
+
+    public function update(Request $request, TaxRate $taxRate)
+    {
+        abort_if(Gate::denies("tax_access"), Response::HTTP_FORBIDDEN, "Forbidden");
+        return back()->with('warning', 'Update tarif pajak belum tersedia');
+    }
+
     public function destroy(TaxRate $taxRate)
     {
         $taxRate->delete();
-        return redirect()->route('admin.tax-rates.index')->withSuccess('Data presentase pajak berhasil dihapus!');
+        return redirect()->route('admin.tax-rates.index')->with('success', 'Data presentase pajak berhasil dihapus!');
     }
 
     public function massDestroy(MassDestroyTaxRateRequest $request)
@@ -41,6 +56,6 @@ class TaxRateController extends Controller
             $taxRate->delete();
         }
 
-        return redirect()->route('admin.tax-rates.index')->withSuccess('Data tax rate(s) berhasil dihapus!');
+        return redirect()->route('admin.tax-rates.index')->with('success', 'Data tax rate(s) berhasil dihapus!');
     }
 }

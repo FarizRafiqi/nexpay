@@ -34,9 +34,10 @@ class TransactionController extends Controller
     {
         $paymentMethods = PaymentMethod::all();
         if($payment->status === "success"){
-            return redirect()->back()->withSuccess("Tagihan sudah terbayar");
+            return redirect()->back()->with("success", "Tagihan sudah terbayar");
         }
 
+        $paymentMethods = PaymentMethod::all();
         return view("pages.pelanggan.payments.index", compact("payment", "paymentMethods"));
     }
 
@@ -67,7 +68,7 @@ class TransactionController extends Controller
         //jika tidak ada penggunaan yang dimaksud di atas, itu berarti tagihan 
         //dari penggunaan listrik tersebut sudah dibayar
         if($usages->isEmpty()) {
-            return redirect()->back()->withSuccess("Tagihan sudah terbayar");
+            return redirect()->back()->with("success", "Tagihan sudah terbayar");
         }
         //Cek PPJ berdasarkan daerah pelanggan
         $totalPayment = 0;
@@ -170,19 +171,10 @@ class TransactionController extends Controller
                     "payment" => $payment->id
                 ]);
             } elseif($response->transaction_status == "settlement" && $payment->status == "success") {
-                return redirect()->route('home')->withSuccess("Tagihan sudah terbayar");
+                return redirect()->route('home')->with('success', "Tagihan sudah terbayar");
             } elseif($response->transaction_status == "settlement" && $payment->status == "pending") {
 
-                alert()
-                ->warning(
-                'Tagihan Anda Belum Terkonfirmasi', 
-                "<p>Anda harus melakukan konfirmasi pembayaran dengan melakukan upload bukti pembayaran</p> 
-                Terdapat 2 kondisi yang menyebabkan pembayar harus melakukan upload bukti pembayaran, yaitu:
-                <ol><li>Sudah melakukan pembayaran, namun status transaksi tertahan di <strong>Menunggu Pembayaran</strong>.</li><li>Sudah melakukan pembayaran, namun tidak terverifikasi oleh sistem sehingga status transaksi menjadi <strong>Kedaluwarsa</strong>.</li></ol>")
-                ->toHtml()
-                ->persistent(true,false);
-
-                return redirect()->route('transaction-history');
+                return redirect()->route('transaction-history')->with('warning', 'Tagihan Anda Belum Terkonfirmasi. Silakan upload bukti pembayaran.');
             }
 
         } catch (Exception $ex) {
@@ -280,7 +272,7 @@ class TransactionController extends Controller
             return view('pages.pelanggan.payments.expire');
         }
         
-        return redirect()->route('home')->withSuccess("Tagihan sudah terbayar");
+        return redirect()->route('home')->with("success", "Tagihan sudah terbayar");
     }
 
     /**

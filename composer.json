@@ -15,8 +15,8 @@
         "consoletvs/charts": "*",
         "doctrine/dbal": "^3.0",
         "fakerphp/faker": "^1.9.1",
-
         "guzzlehttp/guzzle": "^7.0.1",
+        "inertiajs/inertia-laravel": "^3.1",
         "jenssegers/agent": "*",
         "laravel/framework": "^13.0",
         "laravel/socialite": "^5.10",
@@ -25,8 +25,9 @@
         "laravolt/indonesia": "^1.0",
         "livewire/livewire": "^3.0",
         "midtrans/midtrans-php": "^2.3",
-        "realrashid/sweet-alert": "^7.0",
+
         "snapappointments/bootstrap-select": "^1.13",
+        "tightenco/ziggy": "^2.6",
         "yajra/laravel-datatables": "^13.0",
         "yajra/laravel-datatables-oracle": "^13.0"
     },

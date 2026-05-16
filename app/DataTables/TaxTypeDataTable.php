@@ -120,7 +120,7 @@ class TaxTypeDataTable extends DataTable
      *
      * @return string
      */
-    protected function filename()
+    protected function filename(): string
     {
         return 'TaxType_' . date('YmdHis');
     }

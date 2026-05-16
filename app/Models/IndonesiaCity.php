@@ -13,7 +13,7 @@ class IndonesiaCity extends Model
 
     public function province()
     {
-        return $this->belongsTo(IndonesiaProvince::class);
+        return $this->belongsTo(IndonesiaProvince::class, 'province_code', 'code');
     }
 
 }

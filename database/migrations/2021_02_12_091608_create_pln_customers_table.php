@@ -18,9 +18,9 @@ class CreatePlnCustomersTable extends Migration
             $table->string('nama_pelanggan', 100);
             $table->char('nomor_meter', 12)->unique();
             $table->text('alamat');
-            $table->char('id_kota')->default(null);
+            $table->char('id_kota', 4);
             $table->foreignId('id_tarif')->default(null)->constrained('tariffs');
-            $table->foreign('id_kota')->references('id')->on('indonesia_cities');
+            $table->foreign('id_kota')->references('code')->on('indonesia_cities');
             $table->timestamps();
             $table->softDeletes();
         });

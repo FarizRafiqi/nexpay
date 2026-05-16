@@ -9,13 +9,14 @@ use App\Http\Requests\Admin\ReportRequest;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
+use Inertia\Inertia;
 use PDF;
 
 class ReportController extends Controller
 {
     public function index()
     {
-        return view('pages.admin.reports');
+        return Inertia::render('Admin/Reports');
     }
 
     public function printPaymentReports(ReportRequest $request)

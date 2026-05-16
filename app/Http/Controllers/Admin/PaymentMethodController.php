@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\PaymentMethod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,7 +22,7 @@ class PaymentMethodController extends Controller
     {
         abort_if(Gate::denies("payment_method_access"), Response::HTTP_FORBIDDEN, "Forbidden");
 
-        if($request->ajax()){
+        if($request->ajax() && !$request->header('X-Inertia')){
             $paymentMethods = PaymentMethod::all();
             return DataTables::of($paymentMethods)
                                 ->addColumn("action", function($row){
@@ -44,7 +45,7 @@ class PaymentMethodController extends Controller
                                 ->rawColumns(['gambar', 'action'])
                                 ->toJson();
         }
-        return view("pages.admin.payment-method.index");
+        return Inertia::render('Admin/PaymentMethods/Index', ['paymentMethods' => PaymentMethod::paginate(10)]);
     }
 
     /**
@@ -55,7 +56,7 @@ class PaymentMethodController extends Controller
     public function create()
     {
         abort_if(Gate::denies("payment_method_create"), Response::HTTP_FORBIDDEN, "Forbidden");
-        return view("pages.admin.payment-method.create");
+        return Inertia::render('Admin/PaymentMethods/Create');
     }
 
     /**
@@ -67,7 +68,7 @@ class PaymentMethodController extends Controller
     public function show(PaymentMethod $paymentMethod)
     {
         abort_if(Gate::denies("payment_method_show"), Response::HTTP_FORBIDDEN, "Forbidden");
-        return view('pages.admin.payment-method.show', compact('paymentMethod'));
+        return Inertia::render('Admin/PaymentMethods/Show', ['paymentMethod' => $paymentMethod]);
     }
 
     /**
@@ -79,7 +80,7 @@ class PaymentMethodController extends Controller
     public function edit(PaymentMethod $paymentMethod)
     {
         abort_if(Gate::denies("payment_method_edit"), Response::HTTP_FORBIDDEN, "Forbidden");
-        return view("pages.admin.payment-method.edit", compact("paymentMethod"));
+        return Inertia::render('Admin/PaymentMethods/Edit', ['paymentMethod' => $paymentMethod]);
     }
 
     /**
@@ -104,10 +105,9 @@ class PaymentMethodController extends Controller
     {
         abort_if(Gate::denies("payment_method_delete"), Response::HTTP_FORBIDDEN, "Forbidden");
         if($paymentMethod->payments()->count() > 0){
-            alert()->error("Data tidak bisa dihapus karena mempunyai relasi dengan pembayaran.");
-            return redirect()->back();
+            return back()->with('error', "Data tidak bisa dihapus karena mempunyai relasi dengan pembayaran.");
         }
         $paymentMethod->delete();
-        return redirect()->route('admin.payment-methods.index')->withSuccess("Data berhasil dihapus!");
+        return redirect()->route('admin.payment-methods.index')->with('success', "Data berhasil dihapus!");
     }
 }

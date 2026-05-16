@@ -27,7 +27,6 @@
 
   @stack('prepend-script')
   @include('includes.admin.script')
-  @include('sweetalert::alert')
   @livewireScripts
   @stack('addon-script')
 </body>

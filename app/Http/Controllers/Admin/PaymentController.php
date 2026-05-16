@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
+use Inertia\Inertia;
 use Yajra\DataTables\Facades\DataTables;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -24,7 +25,7 @@ class PaymentController extends Controller
     public function index(Request $request)
     {
         abort_if(Gate::denies("payment_access"), Response::HTTP_FORBIDDEN, "Forbidden");
-        if($request->ajax()){
+        if($request->ajax() && !$request->header('X-Inertia')){
             $payments = Payment::with(["plnCustomer", "customer", "details", "paymentMethod"])
                                 ->when(auth()->user()->isBank(), function($query) {
                                     return 
@@ -51,7 +52,8 @@ class PaymentController extends Controller
                     })
                     ->toJson();
         }
-        return view("pages.admin.payment.index");
+        $payments = Payment::with(["plnCustomer", "customer", "paymentMethod"])->paginate(10);
+        return Inertia::render('Admin/Payments/Index', ['payments' => $payments]);
     }
 
     /**
@@ -63,14 +65,14 @@ class PaymentController extends Controller
     public function show(Payment $payment)
     {
         abort_if(Gate::denies("payment_show"), Response::HTTP_FORBIDDEN, "Forbidden");
-        if(request()->ajax()){
+        if(request()->ajax() && !request()->header('X-Inertia')){
             return Datatables::of($payment->details())
                                 ->toJson();
         }
 
         $totalBayar = $payment->total_bayar+$payment->denda+$payment->biaya_admin;
         $totalBayar = number_format($totalBayar, 2, ",", ".");
-        return view("pages.admin.payment.show", compact("payment", "totalBayar"));
+        return Inertia::render('Admin/Payments/Show', ['payment' => $payment, 'totalBayar' => $totalBayar]);
     }
 
     /**
@@ -83,7 +85,7 @@ class PaymentController extends Controller
     {
         abort_if(Gate::denies("payment_edit"), Response::HTTP_FORBIDDEN, "Forbidden");
 
-        return view("pages.admin.payment.edit", compact("payment"));
+        return Inertia::render('Admin/Payments/Edit', ['payment' => $payment]);
     }
 
     /**
@@ -109,6 +111,6 @@ class PaymentController extends Controller
         }else{
             $payment->update($request->only("status"));
         }
-        return redirect()->route("admin.payments.index")->withSuccess("Data pembayaran berhasil diubah!");
+        return redirect()->route("admin.payments.index")->with('success', "Data pembayaran berhasil diubah!");
     }
 }

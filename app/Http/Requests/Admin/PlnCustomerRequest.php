@@ -3,32 +3,27 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class PlnCustomerRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
     public function authorize()
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
     public function rules()
     {
         return [
             'nama_pelanggan' => 'required|string',
-            'nomor_meter' => 'required|numeric|unique:pln_customers',
+            'nomor_meter' => [
+                'required',
+                'numeric',
+                Rule::unique('pln_customers', 'nomor_meter')->ignore($this->route('pln_customer')?->id),
+            ],
             'alamat' => 'required|string|nullable',
             'id_tarif' => 'required|numeric|exists:tariffs,id',
-            'id_kota' => 'required|exists:indonesia_cities,id'
+            'id_kota' => 'required|exists:indonesia_cities,code',
         ];
     }
 
@@ -36,8 +31,8 @@ class PlnCustomerRequest extends FormRequest
     {
         return [
             'nama_pelanggan.required' => 'Nama pelanggan tidak boleh kosong',
-            'nomor_meter.required' => 'Nama pelanggan tidak boleh kosong',
-            'alamat.required' => 'Nama pelanggan tidak boleh kosong',
+            'nomor_meter.required' => 'Nomor meter tidak boleh kosong',
+            'alamat.required' => 'Alamat tidak boleh kosong',
             'id_tarif.required' => 'Tarif tidak boleh kosong',
             'nama_pelanggan.string' => 'Nama pelanggan harus berupa huruf abjad',
             'alamat.string' => 'Alamat harus berupa string',

@@ -9,6 +9,7 @@ use App\Models\Level;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
 use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Facades\DataTables;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,7 +24,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, 'Forbidden');
-        if($request->ajax()){
+        if($request->ajax() && !$request->header('X-Inertia')){
             $users = User::with('level')->get();
             return DataTables::of($users)
                     ->editColumn('level.level', function($row){
@@ -47,7 +48,7 @@ class UserController extends Controller
                     ->toJson();
         }
 
-        return view('pages.admin.user.index');
+        return Inertia::render('Admin/Users/Index', ['users' => User::with('level')->paginate(10)]);
     }
 
     /**
@@ -59,7 +60,7 @@ class UserController extends Controller
     {
         abort_if(Gate::denies('user_create'), Response::HTTP_FORBIDDEN, 'Forbidden');
         $levels = Level::get();
-        return view('pages.admin.user.create', compact('levels'));
+        return Inertia::render('Admin/Users/Create', ['levels' => $levels]);
     }
 
     /**
@@ -77,7 +78,7 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
             'id_level' => $request->id_level
         ]);
-        return redirect()->route('admin.users.index')->withSuccess('Data user berhasil ditambahkan!');
+        return redirect()->route('admin.users.index')->with('success', 'Data user berhasil ditambahkan!');
     }
 
     /**
@@ -89,7 +90,7 @@ class UserController extends Controller
     public function show(User $user)
     {
         abort_if(Gate::denies('user_show'), Response::HTTP_FORBIDDEN, 'Forbidden');
-        return view('pages.admin.user.show', compact('user'));
+        return Inertia::render('Admin/Users/Show', ['user' => $user->load('level')]);
     }
 
     /**
@@ -102,7 +103,7 @@ class UserController extends Controller
     {
         abort_if(Gate::denies('user_edit'), Response::HTTP_FORBIDDEN, 'Forbidden');
         $levels = Level::get();
-        return view('pages.admin.user.edit', compact('user', 'levels'));
+        return Inertia::render('Admin/Users/Edit', ['user' => $user, 'levels' => $levels]);
     }
 
     /**
@@ -118,7 +119,7 @@ class UserController extends Controller
         $request['password'] = bcrypt($request->password);
         $user->update($request->all());
         
-        return redirect()->route('admin.users.index')->withSuccess('Data ' . $user->nama . ' berhasil diubah!');
+        return redirect()->route('admin.users.index')->with('success', 'Data ' . $user->nama . ' berhasil diubah!');
     }
 
     /**
@@ -132,12 +133,11 @@ class UserController extends Controller
         abort_if(Gate::denies('user_delete'), Response::HTTP_FORBIDDEN, 'Forbidden');
 
         if(count($user->payments) > 0){
-            alert()->error('User tidak bisa dihapus, karena mempunyai relasi dengan data pembayaran');
-            return back();
+            return back()->with('error', 'User tidak bisa dihapus, karena mempunyai relasi dengan data pembayaran');
         }
 
         $user->delete();
-        return redirect()->route('admin.users.index')->withSuccess('Data ' . $user->nama . ' berhasil dihapus!');
+        return redirect()->route('admin.users.index')->with('success', 'Data ' . $user->nama . ' berhasil dihapus!');
     }
 
     public function massDestroy(MassDestroyUserRequest $request)
@@ -145,17 +145,17 @@ class UserController extends Controller
         $users = User::whereIn('id', request('ids'))->get();
         foreach($users as $user){
             if(count($user->payments) > 0) {
-                alert()->error('User tidak bisa dihapus, karena mempunyai relasi dengan data pembayaran');
+                return back()->with('error', 'User tidak bisa dihapus, karena mempunyai relasi dengan data pembayaran');
                 return;
             } elseif ($user->id_level !== 1) {
                 $user->delete();
             } else {
-                alert()->error('User Admin tidak dapat dihapus');
+                return back()->with('error', 'User Admin tidak dapat dihapus');
                 return;
             }
             
         }
 
-        return redirect()->route('admin.users.index')->withSuccess('Data user(s) berhasil dihapus!');
+        return redirect()->route('admin.users.index')->with('success', 'Data user(s) berhasil dihapus!');
     }
 }

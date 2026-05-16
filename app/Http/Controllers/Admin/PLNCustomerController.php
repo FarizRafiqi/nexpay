@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PlnCustomerRequest;
 use App\Http\Requests\Admin\MassDestroyPlnCustomerRequest;
+use App\Models\IndonesiaProvince;
 use App\Models\PlnCustomer;
 use App\Models\Tariff;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
 use Yajra\DataTables\Facades\DataTables;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -23,7 +25,7 @@ class PLNCustomerController extends Controller
     {
         abort_if(Gate::denies("pln_customer_access"), Response::HTTP_FORBIDDEN, "Forbidden");
 
-        if($request->ajax()){   
+        if($request->ajax() && !$request->header('X-Inertia')){   
             $customers = PlnCustomer::with("tariff", "usages")->get();
             return DataTables::of($customers)
                     ->addColumn("action", function($row){
@@ -42,7 +44,10 @@ class PLNCustomerController extends Controller
                     })
                     ->toJson();
         }
-        return view("pages.admin.pln-customer.index");
+        $plnCustomers = PlnCustomer::with('tariff')->paginate(10);
+        return Inertia::render('Admin/PlnCustomers/Index', [
+            'plnCustomers' => $plnCustomers,
+        ]);
     }
     /**
      * Show the form for creating a new resource.
@@ -53,7 +58,11 @@ class PLNCustomerController extends Controller
     {
         abort_if(Gate::denies("pln_customer_create"), Response::HTTP_FORBIDDEN, "Forbidden");
         $tariffs = Tariff::get();
-        return view("pages.admin.pln-customer.create", compact("tariffs"));
+        $provinces = IndonesiaProvince::with('cities')->orderBy('name')->get();
+        return Inertia::render('Admin/PlnCustomers/Create', [
+            'tariffs' => $tariffs,
+            'provinces' => $provinces,
+        ]);
     }
 
     /**
@@ -65,7 +74,7 @@ class PLNCustomerController extends Controller
     public function store(PlnCustomerRequest $request)
     {
         PlnCustomer::create($request->all());
-        return redirect()->route("admin.pln-customers.index")->withSuccess("Data berhasil ditambahkan!");
+        return redirect()->route("admin.pln-customers.index")->with('success', 'Data berhasil ditambahkan!');
     }
 
     /**
@@ -77,7 +86,7 @@ class PLNCustomerController extends Controller
     public function show(PlnCustomer $plnCustomer)
     {
         abort_if(Gate::denies("pln_customer_show"), Response::HTTP_FORBIDDEN, "Forbidden");
-        return view("pages.admin.pln-customer.show", compact("plnCustomer"));
+        return Inertia::render('Admin/PlnCustomers/Show', ['plnCustomer' => $plnCustomer->load('tariff')]);
     }
 
     /**
@@ -90,7 +99,12 @@ class PLNCustomerController extends Controller
     {
         abort_if(Gate::denies("pln_customer_edit"), Response::HTTP_FORBIDDEN, "Forbidden");
         $tariffs = Tariff::get();
-        return view("pages.admin.pln-customer.edit", compact("plnCustomer", "tariffs"));
+        $provinces = IndonesiaProvince::with('cities')->orderBy('name')->get();
+        return Inertia::render('Admin/PlnCustomers/Edit', [
+            'plnCustomer' => $plnCustomer,
+            'tariffs' => $tariffs,
+            'provinces' => $provinces,
+        ]);
     }
 
     /**
@@ -100,11 +114,11 @@ class PLNCustomerController extends Controller
      * @param  \App\Models\PlnCustomer  $plnCustomer
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, PlnCustomer $plnCustomer)
+    public function update(PlnCustomerRequest $request, PlnCustomer $plnCustomer)
     {
         abort_if(Gate::denies("pln_customer_update"), Response::HTTP_FORBIDDEN, "Forbidden");
         $plnCustomer->update($request->all());
-        return redirect()->route('admin.pln-customers.index')->withSuccess("Data Pelanggan Berhasil Diperbarui!");
+        return redirect()->route('admin.pln-customers.index')->with('success', 'Data Pelanggan Berhasil Diperbarui!');
     }
 
     /**
@@ -117,12 +131,11 @@ class PLNCustomerController extends Controller
     {
         abort_if(Gate::denies("pln_customer_delete"), Response::HTTP_FORBIDDEN, "Forbidden");
         if($plnCustomer->usages()->count() > 0){
-            alert()->error("Pelanggan tidak bisa dihapus, karena mempunyai relasi dengan data penggunaan");
-            return back();
+            return back()->with('error', 'Pelanggan tidak bisa dihapus, karena mempunyai relasi dengan data penggunaan');
         }
         
         $plnCustomer->delete();
-        return back()->withSuccess("Pelanggan Berhasil Dihapus!");
+        return back()->with('success', 'Pelanggan Berhasil Dihapus!');
     }
 
     public function massDestroy(MassDestroyPlnCustomerRequest $request)
@@ -131,12 +144,11 @@ class PLNCustomerController extends Controller
         $customers = PlnCustomer::whereIn('id', request('ids'))->get();
         foreach($customers as $customer){
             if($customer->usages()->count() > 0){
-                alert()->error("Pelanggan tidak bisa dihapus, karena mempunyai relasi dengan data penggunaan");
-                return back();
+                return back()->with('error', 'Pelanggan tidak bisa dihapus, karena mempunyai relasi dengan data penggunaan');
             }
             $customer->delete();
         }
 
-        return redirect()->route('admin.pln-customers.index')->withSuccess('Data pelanggan PLN berhasil dihapus!');
+        return redirect()->route('admin.pln-customers.index')->with('success', 'Data pelanggan PLN berhasil dihapus!');
     }
 }

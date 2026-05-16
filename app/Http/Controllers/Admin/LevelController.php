@@ -10,6 +10,7 @@ use App\Models\Permission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
+use Inertia\Inertia;
 use Yajra\DataTables\Facades\DataTables;
 
 class LevelController extends Controller
@@ -23,7 +24,7 @@ class LevelController extends Controller
     {
         abort_if(Gate::denies('level_access'), Response::HTTP_FORBIDDEN, 'Forbidden');
 
-        if($request->ajax()){   
+        if($request->ajax() && !$request->header('X-Inertia')){   
             $levels = Level::get();
             return DataTables::of($levels)
                     ->addColumn('action', function($row){
@@ -43,7 +44,7 @@ class LevelController extends Controller
                     ->toJson();
         }
 
-        return view('pages.admin.level.index');
+        return Inertia::render('Admin/Levels/Index', ['levels' => Level::get()]);
     }
 
     /**
@@ -55,7 +56,7 @@ class LevelController extends Controller
     {
         abort_if(Gate::denies('level_create'), Response::HTTP_FORBIDDEN, 'Forbidden');
         $permissions = Permission::all();
-        return view('pages.admin.level.create', compact('permissions'));
+        return Inertia::render('Admin/Levels/Create', ['permissions' => $permissions]);
     }
 
     /**
@@ -69,7 +70,7 @@ class LevelController extends Controller
         $level = Level::create(['level'=>strtolower($request->level)]);
         $level->permissions()->sync($request->input('permissions', []));
 
-        return redirect()->route('admin.levels.index')->withSuccess('Level berhasil ditambahkan!');
+        return redirect()->route('admin.levels.index')->with('success', 'Level berhasil ditambahkan!');
     }
 
     /**
@@ -93,7 +94,7 @@ class LevelController extends Controller
     {
         abort_if(Gate::denies('level_edit'), Response::HTTP_FORBIDDEN, 'Forbidden');
         $permissions = Permission::all();
-        return view('pages.admin.level.edit', compact('level', 'permissions'));
+        return Inertia::render('Admin/Levels/Edit', ['level' => $level, 'permissions' => $permissions]);
     }
 
     /**
@@ -108,7 +109,7 @@ class LevelController extends Controller
         $level->update(['level' => strtolower($request->level)]);
         $level->permissions()->sync($request->input('permissions', []));
 
-        return redirect()->route('admin.levels.index')->withSuccess('Level berhasil diubah!');
+        return redirect()->route('admin.levels.index')->with('success', 'Level berhasil diubah!');
     }
 
     /**
@@ -121,7 +122,7 @@ class LevelController extends Controller
     {
         abort_if(Gate::denies('level_delete'), Response::HTTP_FORBIDDEN, 'Forbidden');
         $level->delete();
-        return redirect()->route('admin.levels.index')->withSuccess('Level berhasil dihapus!');
+        return redirect()->route('admin.levels.index')->with('success', 'Level berhasil dihapus!');
     }
 
     public function massDestroy(MassDestroyLevelRequest $request)
@@ -130,12 +131,12 @@ class LevelController extends Controller
         $levels = Level::whereIn('id', request('ids'))->get();
         foreach($levels as $level){
             if($level-> id === 1){
-                alert()->error('Admin tidak dapat dihapus!');
+                return back()->with('error', 'Admin tidak dapat dihapus!');
                 return;
             }
             $level->delete();
         }
 
-        return redirect()->route('admin.levels.index')->withSuccess('Data level(s) berhasil dihapus!');
+        return redirect()->route('admin.levels.index')->with('success', 'Data level(s) berhasil dihapus!');
     }
 }

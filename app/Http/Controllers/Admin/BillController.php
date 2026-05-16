@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Bill;
 use App\Models\Usage;
 use Carbon\Carbon;
+use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Yajra\DataTables\Facades\DataTables;
@@ -21,7 +22,7 @@ class BillController extends Controller
     public function index(Request $request)
     {
         abort_if(Gate::denies("bill_access"), Response::HTTP_FORBIDDEN, "Forbidden");
-        if($request->ajax()){
+        if($request->ajax() && !$request->header('X-Inertia')){
             $bills = Bill::get();
             return DataTables::of($bills)
                     ->editColumn('id_penggunaan', function($bill){
@@ -34,7 +35,7 @@ class BillController extends Controller
                     ->toJson();
         }
 
-        return view('pages.admin.bill.index');
+        return Inertia::render('Admin/Bills/Index', ['bills' => Bill::with('usage')->paginate(10)]);
     }
 
     /**

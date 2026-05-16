@@ -3,20 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
 use App\Models\Bill;
 use App\Models\Payment;
 use App\Models\PaymentHistory;
 use Illuminate\Http\Request;
-use Yajra\DataTables\Facades\DataTables;
-use App\Charts\YearlyEarnings;
-use Carbon\Carbon;
+use Inertia\Inertia;
 use Illuminate\Database\Eloquent\Builder;
 
-/**
- * Controller ini digunakan untuk menampilkan histori pembayaran terbaru,
- * melihat jumlah pendapatan, total pembayaran, tagihan listrik lunas,
- * dan tagihan listrik belum lunas
- */
 class DashboardController extends Controller
 {
     /**
@@ -24,59 +18,41 @@ class DashboardController extends Controller
      */
     public function index(Request $request)
     {
-        //Hitung total pendapatan
-        $payments = Payment::where('status', 'success')->get();
-        $totalPendapatan = $payments->sum('total_bayar');
-        $totalPendapatan = 'Rp '. number_format($totalPendapatan, 2, ',', '.');
+        // Hitung total pendapatan
+        $paymentsCount = Payment::where('status', 'success')->count();
+        $totalPendapatanRaw = Payment::where('status', 'success')->sum('total_bayar');
+        $totalPendapatanFormatted = 'Rp ' . number_format($totalPendapatanRaw, 2, ',', '.');
 
-        //ambil pendapatan bulan ini dari stored function yang telah dibuat di database
-        // $monthEarnings = DB::select('SELECT getMonthEarnings() AS pendapatan_bulan_ini');
-        // if(empty($monthEarnings)){
-        //     $monthEarnings = 0;
-        // }else{
-        //     $monthEarnings = $monthEarnings[0]->pendapatan_bulan_ini;
-        //     $monthEarnings = 'Rp '. number_format($monthEarnings, 2, ',', '.');
-        // }
-        $bills = Bill::get();
+        // Bills stats
+        $totalBills = Bill::count();
+        $unpaidBills = Bill::where('status', 'unpaid')->count();
 
-        if($request->ajax()){
-            $paymentHistories = PaymentHistory::with(['payment', 'payment.paymentMethod'])
-                                                ->when(auth()->user()->isBank(), function($query) {
-                                                    return 
-                                                    $query->whereHas('payment.paymentMethod', function(Builder $query) {
-                                                        $bankName = explode(" ", auth()->user()->username);
-                                                        $query->where('nama', 'like' ,'%'.$bankName[1].'%');
-                                                    });
-                                                })->get();
-            return DataTables::of($paymentHistories)
-                               ->toJson();
-        }
-
-        $months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-
-        $data = [];
+        // Chart Data
+        $months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+        $chartData = [];
         foreach ($months as $index => $month) {
-            $data[$index] = Payment::where('status', 'success')
-                                   ->whereYear('created_at', now()->year)
-                                   ->whereMonth('created_at', $index)
-                                   ->get()
-                                   ->sum('total_bayar');
+            $earnings = Payment::where('status', 'success')
+                                ->whereYear('created_at', now()->year)
+                                ->whereMonth('created_at', $index + 1)
+                                ->sum('total_bayar');
+            
+            $chartData[] = [
+                'name' => $month,
+                'total' => (int) $earnings
+            ];
         }
 
-        $chart = new YearlyEarnings;
-        $chart->title('Pendapatan Tahun '.now()->year);
-        $chart->labels($months);
-        $chart->dataset('Pendapatan Tahun '. now()->year, 'line', $data);
-        $chart->options([
-                            'maintainAspectRatio' => false,
-                            'borderColor'=>'rgb(75, 192, 192)',
-                            'scales' => ['y' => 
-                                [
-                                    'min' => 0,
-                                ]
-                            ]
-                        ], true);
-        return view('pages.admin.index', compact('totalPendapatan', 'bills', 'payments', 'chart'));
+        return Inertia::render('Admin/Dashboard', [
+            'stats' => [
+                'totalPendapatan' => $totalPendapatanFormatted,
+                'totalPendapatanRaw' => $totalPendapatanRaw,
+                'totalPayments' => $paymentsCount,
+                'totalBills' => $totalBills,
+                'unpaidBills' => $unpaidBills,
+            ],
+            'monthly_revenue' => $chartData,
+            'year' => now()->year
+        ]);
     }
 
     /**
@@ -84,6 +60,25 @@ class DashboardController extends Controller
      */
     public function settings(Request $request)
     {
-        return view('pages.admin.settings');
+        return Inertia::render('Admin/Settings');
+    }
+
+    public function notifications(Request $request)
+    {
+        $logs = ActivityLog::with('user')
+            ->latest()
+            ->take(10)
+            ->get()
+            ->map(function ($log) {
+                return [
+                    'id' => $log->id,
+                    'title' => ucfirst(str_replace('_', ' ', $log->tabel_referensi ?? 'Aktivitas')),
+                    'description' => $log->deskripsi,
+                    'time' => $log->created_at ? $log->created_at->diffForHumans() : '',
+                    'user' => $log->user?->nama ?? 'Sistem',
+                ];
+            });
+
+        return response()->json($logs);
     }
 }

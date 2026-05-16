@@ -8,6 +8,7 @@ use App\Models\Level;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Inertia\Inertia;
 
 class UserProfileController extends Controller
 {
@@ -18,7 +19,7 @@ class UserProfileController extends Controller
      */
     public function index()
     {
-        return view('pages.admin.profile.index');
+        return Inertia::render('Admin/Profile/Index');
     }
 
     /**
@@ -29,7 +30,7 @@ class UserProfileController extends Controller
     public function edit(Request $request)
     {
         $levels = Level::all();
-        return view('pages.admin.profile.edit', compact('request', 'levels'));
+        return Inertia::render('Admin/Profile/Edit', ['levels' => $levels]);
     }
 
     /**
@@ -53,6 +54,6 @@ class UserProfileController extends Controller
         }
       
         User::find($idUser)->update($data);
-        return back()->withSuccess('Profil berhasil diperbarui!');
+        return back()->with('success', 'Profil berhasil diperbarui!');
     }
 }

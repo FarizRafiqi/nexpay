@@ -12,7 +12,6 @@
 <body>
   @include('includes.navbar-alternate')
   @yield('content')
-  @include('sweetalert::alert')
   <script src="{{ asset('js/app.js') }}"></script>
   @stack('script')
 </body>

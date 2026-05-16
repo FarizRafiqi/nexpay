@@ -21,7 +21,7 @@ class CreateTaxRatesTable extends Migration
             $table->foreignId('tax_type_id')->constrained();
             $table->char('indonesia_city_id', 4)->index();
             $table->decimal('rate', 10, 2); //dalam satuan persen (%)
-            $table->foreign('indonesia_city_id')->references('id')->on(config('laravolt.indonesia.table_prefix').'cities');
+            $table->foreign('indonesia_city_id')->references('code')->on(config('laravolt.indonesia.table_prefix').'cities');
             $table->timestamps();
         });
     }

@@ -18,7 +18,6 @@
     
     @stack('prepend-script')
     @include('includes.script')
-    @include('sweetalert::alert')
     @livewireScripts
     @stack('addon-script')
     <!--Start of Tawk.to Script-->

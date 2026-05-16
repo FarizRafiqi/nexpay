@@ -14,15 +14,15 @@ class CreateCitiesTable extends Migration
     public function up()
     {
         Schema::create(config('laravolt.indonesia.table_prefix').'cities', function (Blueprint $table) {
-            $table->char('id', 4);
-            $table->char('province_id', 2);
+            $table->char('code', 4);
+            $table->char('province_code', 2);
             $table->string('name', 255);
             $table->text('meta')->nullable();
-            $table->primary('id');
+            $table->primary('code');
             $table->timestamps();
 
-            $table->foreign('province_id')
-                ->references('id')
+            $table->foreign('province_code')
+                ->references('code')
                 ->on(config('laravolt.indonesia.table_prefix').'provinces')
                 ->onUpdate('cascade')->onDelete('restrict');
         });

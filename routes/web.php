@@ -22,6 +22,8 @@ use Illuminate\Support\Facades\Route,
     App\Http\Controllers\MidtransController,
     App\Http\Controllers\SocialiteController,
     Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
+
 
 //Static Page
 Route::get('/', [HomeController::class, "index"])->name("home");
@@ -63,8 +65,9 @@ Route::get('auth/google', [SocialiteController::class, 'redirectToGoogle'])->nam
 Route::get('auth/google/callback', [SocialiteController::class, 'handleGoogleCallback'])->name('auth.google.callback');
 
 // Admin Panel
-Route::group(["as" => 'admin.', 'prefix' => 'admin', 'middleware' => ['auth', 'admin', 'password.confirm']], function(){
+Route::group(["as" => 'admin.', 'prefix' => 'admin', 'middleware' => ['auth', 'admin']], function(){
   Route::get('/', [DashboardController::class, "index"])->name('dashboard');
+  Route::get('/notifications/unread', [DashboardController::class, "notifications"])->name('notifications.unread');
   Route::get('/reports', [ReportController::class, "index"])->name('reports');
   Route::post('/reports/payment', [ReportController::class, "printPaymentReports"])->name('reports.payment');
 

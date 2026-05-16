@@ -3,6 +3,7 @@
 /public/storage/img/avatar
 /public/storage/img/bukti-bayar
 /public/assets/img/payment-instruction/*.psd
+/public/build/assets
 /storage/*.key
 /vendor
 .env

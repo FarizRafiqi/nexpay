@@ -13,6 +13,6 @@ class IndonesiaProvince extends Model
 
     public function cities()
     {
-        $this->hasMany(IndonesiaCity::class);
+        return $this->hasMany(IndonesiaCity::class, 'province_code', 'code');
     }
 }

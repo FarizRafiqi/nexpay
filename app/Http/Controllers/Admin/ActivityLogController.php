@@ -7,6 +7,7 @@ use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
+use Inertia\Inertia;
 use Yajra\DataTables\Facades\DataTables;
 
 /**
@@ -17,7 +18,7 @@ class ActivityLogController extends Controller
     public function index(Request $request)
     {
         abort_if(Gate::denies("activity_log_access"), Response::HTTP_FORBIDDEN, "Forbidden");
-        if($request->ajax()){
+        if($request->ajax() && !$request->header('X-Inertia')){
             $activityLogs = ActivityLog::get();
             return DataTables::of($activityLogs)
                                 ->editColumn('id_user', function($user){
@@ -26,6 +27,6 @@ class ActivityLogController extends Controller
                                 ->rawColumns(['id_user'])
                                 ->toJson();
         }
-        return view("pages.admin.activity-log");
+        return Inertia::render('Admin/ActivityLogs', ['activityLogs' => ActivityLog::with('user')->paginate(10)]);
     }
 }

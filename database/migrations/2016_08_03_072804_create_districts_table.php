@@ -14,17 +14,16 @@ class CreateDistrictsTable extends Migration
     public function up()
     {
         Schema::create(config('laravolt.indonesia.table_prefix').'districts', function (Blueprint $table) {
-            $table->char('id', 7);
-            $table->char('city_id', 4);
+            $table->char('code', 7);
+            $table->char('city_code', 4);
             $table->string('name', 255);
             $table->text('meta')->nullable();
-            $table->primary('id');
-            $table->timestamps();
-
-            $table->foreign('city_id')
-                ->references('id')
+            $table->primary('code');
+            $table->foreign('city_code')
+                ->references('code')
                 ->on(config('laravolt.indonesia.table_prefix').'cities')
                 ->onUpdate('cascade')->onDelete('restrict');
+            $table->timestamps();
         });
     }
 

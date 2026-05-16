@@ -10,6 +10,7 @@ use App\Models\Usage;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
 use Yajra\DataTables\Facades\DataTables;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -28,7 +29,7 @@ class ElectricityUsageController extends Controller
     {
         abort_if(Gate::denies("usage_access"), Response::HTTP_FORBIDDEN, "Forbidden");
 
-        if($request->ajax()){
+        if($request->ajax() && !$request->header('X-Inertia')){
             $usages = Usage::all();
             return DataTables::of($usages)
                     ->addColumn("action", function($row){
@@ -50,7 +51,7 @@ class ElectricityUsageController extends Controller
                     })
                     ->toJson();
         }
-        return view("pages.admin.electricity-usage.index");
+        return Inertia::render('Admin/Usages/Index', ['usages' => Usage::paginate(10)]);
     }
 
     /**
@@ -63,11 +64,11 @@ class ElectricityUsageController extends Controller
         abort_if(Gate::denies("usage_create"), Response::HTTP_FORBIDDEN, "Forbidden");
         $customers = PlnCustomer::get();
 
-        if($request->ajax()){
+        if($request->ajax() && !$request->header('X-Inertia')){
             $usage = Usage::where("id_pelanggan_pln", $request->id_pelanggan)->max("meter_akhir") ?? sprintf("%08d", 0);
             return response()->json(sprintf("%08d", $usage));
         }
-        return view("pages.admin.electricity-usage.create", compact("customers"));
+        return Inertia::render('Admin/Usages/Create', ['customers' => $customers]);
     }
 
     /**
@@ -79,7 +80,7 @@ class ElectricityUsageController extends Controller
     public function store(UsageRequest $request)
     {
         Usage::create($request->all());
-        return redirect()->route("admin.usages.index")->withSuccess("Data berhasil ditambahkan!");
+        return redirect()->route("admin.usages.index")->with('success', "Data berhasil ditambahkan!");
     }
 
     /**
@@ -91,7 +92,7 @@ class ElectricityUsageController extends Controller
     public function show(Usage $usage)
     {
         abort_if(Gate::denies("usage_show"), Response::HTTP_FORBIDDEN, "Forbidden");
-        return view("pages.admin.electricity-usage.show", compact("usage"));
+        return Inertia::render('Admin/Usages/Show', ['usage' => $usage]);
     }
 
     /**
@@ -104,7 +105,7 @@ class ElectricityUsageController extends Controller
     {
         abort_if(Gate::denies("usage_edit"), Response::HTTP_FORBIDDEN, "Forbidden");
         $customers = PlnCustomer::get();
-        return view("pages.admin.electricity-usage.edit", compact("usage", "customers"));
+        return Inertia::render('Admin/Usages/Edit', ['usage' => $usage, 'customers' => $customers]);
     }
 
     /**
@@ -118,7 +119,7 @@ class ElectricityUsageController extends Controller
     {
         abort_if(Gate::denies("usage_update"), Response::HTTP_FORBIDDEN, "Forbidden");
         $usage->update($request->all());
-        return redirect()->route("admin.usages.index")->withSuccess("Data penggunaan berhasil diubah!");
+        return redirect()->route("admin.usages.index")->with('success', "Data penggunaan berhasil diubah!");
     }
 
     /**
@@ -136,12 +137,11 @@ class ElectricityUsageController extends Controller
          * maka soft deletes.
          */
         if($usage->bill_count > 0 && $usage->bill->status == "LUNAS"){
-            alert('Data tidak dapat dihapus', 'Penggunaan memiliki relasi dengan tagihan yang telah terbayar', 'error');
-            return redirect()->back();
+            return back()->with('error', 'Penggunaan memiliki relasi dengan tagihan yang telah terbayar');
         }
         $usage->bill->delete();
         $usage->delete();
-        return redirect()->route('admin.usages.index')->withSuccess('Data penggunaan berhasil dihapus!');
+        return redirect()->route('admin.usages.index')->with('success', 'Data penggunaan berhasil dihapus!');
     }
 
     public function massDestroy(MassDestroyUsageRequest $request)
@@ -150,7 +150,7 @@ class ElectricityUsageController extends Controller
         $usages = Usage::whereIn('id', request('ids'))->get();
         foreach ($usages as $usage) {
             if($usage->bill_count > 0 && $usage->bill->status == "LUNAS"){
-                alert()->error('Data tidak dapat dihapus', 'Penggunaan memiliki relasi dengan tagihan yang telah terbayar');
+                return back()->with('error', 'Penggunaan memiliki relasi dengan tagihan yang telah terbayar');
                 return;
             }
             
@@ -158,6 +158,6 @@ class ElectricityUsageController extends Controller
             $usage->delete();
         }
 
-        return redirect()->back()->withSuccess('Data usage(s) berhasil dihapus!');
+        return redirect()->back()->with('success', 'Data usage(s) berhasil dihapus!');
     }
 }

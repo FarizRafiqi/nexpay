@@ -12,7 +12,7 @@ class TaxRate extends Model
     protected $guarded = [];
     public function city()
     {
-        return $this->belongsTo(IndonesiaCity::class, 'indonesia_city_id', 'id', 'indonesia_cities');
+        return $this->belongsTo(IndonesiaCity::class, 'indonesia_city_id', 'code');
     }
 
     public function taxType()
