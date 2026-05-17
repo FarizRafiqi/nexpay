@@ -2,33 +2,22 @@
 
 namespace Database\Factories;
 
+use App\Models\PlnCustomer;
 use App\Models\Usage;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class UsageFactory extends Factory
 {
-    /**
-     * The name of the factory's corresponding model.
-     *
-     * @var string
-     */
     protected $model = Usage::class;
 
-    /**
-     * Define the model's default state.
-     *
-     * @return array
-     */
     public function definition()
     {
-        $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-
         return [
-            'id_pelanggan_pln' => rand(1,10),
-            'bulan' => $bulan[rand(0,11)],
+            'id_pelanggan_pln' => PlnCustomer::factory(),
+            'bulan' => $this->faker->numberBetween(1, 12),
             'tahun' => date('Y'),
-            'meter_awal' => rand(00000000, 10000000),
-            'meter_akhir' => rand(00000000, 10000000),
+            'meter_awal' => $this->faker->numberBetween(0, 10000000),
+            'meter_akhir' => $this->faker->numberBetween(10000000, 20000000),
         ];
     }
 }

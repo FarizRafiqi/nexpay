@@ -139,7 +139,9 @@ class ElectricityUsageController extends Controller
         if($usage->bill_count > 0 && $usage->bill->status == "LUNAS"){
             return back()->with('error', 'Penggunaan memiliki relasi dengan tagihan yang telah terbayar');
         }
-        $usage->bill->delete();
+        if ($usage->bill) {
+            $usage->bill->delete();
+        }
         $usage->delete();
         return redirect()->route('admin.usages.index')->with('success', 'Data penggunaan berhasil dihapus!');
     }

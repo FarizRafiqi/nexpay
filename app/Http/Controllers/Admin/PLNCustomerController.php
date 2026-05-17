@@ -135,7 +135,7 @@ class PLNCustomerController extends Controller
         }
         
         $plnCustomer->delete();
-        return back()->with('success', 'Pelanggan Berhasil Dihapus!');
+        return redirect()->route('admin.pln-customers.index')->with('success', 'Pelanggan Berhasil Dihapus!');
     }
 
     public function massDestroy(MassDestroyPlnCustomerRequest $request)

@@ -59,6 +59,19 @@ class PaymentMethodController extends Controller
         return Inertia::render('Admin/PaymentMethods/Create');
     }
 
+    public function store(Request $request)
+    {
+        abort_if(Gate::denies("payment_method_create"), Response::HTTP_FORBIDDEN, "Forbidden");
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'slug' => 'nullable|string|max:255',
+        ]);
+        PaymentMethod::create(array_merge($request->all(), [
+            'gambar' => $request->gambar ?? 'img/payment-methods/default.png',
+        ]));
+        return redirect()->route('admin.payment-methods.index')->with('success', 'Metode pembayaran berhasil ditambahkan!');
+    }
+
     /**
      * Display the specified resource.
      *
@@ -93,6 +106,8 @@ class PaymentMethodController extends Controller
     public function update(Request $request, PaymentMethod $paymentMethod)
     {
         abort_if(Gate::denies("payment_method_update"), Response::HTTP_FORBIDDEN, "Forbidden");
+        $paymentMethod->update($request->only(['nama', 'slug', 'deskripsi']));
+        return redirect()->route('admin.payment-methods.index')->with('success', 'Metode pembayaran berhasil diubah!');
     }
 
     /**
