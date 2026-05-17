@@ -58,11 +58,11 @@ class User extends Authenticatable
 
     public function isAdmin()
     {
-        return ($this->id_level === 1 ? true : false);
+        return optional($this->level)->level === 'administrator';
     }
 
     public function isBank()
     {
-        return ($this->id_level === 3 ? true : false);
+        return optional($this->level)->level === 'bank';
     }
 }

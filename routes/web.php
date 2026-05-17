@@ -1,10 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route,
+    App\Http\Controllers\LanguageController,
     App\Http\Controllers\UploadController,
     App\Http\Controllers\HomeController,
     App\Http\Controllers\Admin\BillController,
     App\Http\Controllers\Admin\DashboardController,
+    App\Http\Controllers\Admin\NotificationController,
     App\Http\Controllers\Admin\ElectricityUsageController,
     App\Http\Controllers\Admin\PaymentController,
     App\Http\Controllers\Admin\PLNCustomerController,
@@ -24,6 +26,9 @@ use Illuminate\Support\Facades\Route,
     Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
+
+// Language Switch
+Route::get('lang/{locale}', [LanguageController::class, 'switch'])->name('lang.switch');
 
 //Static Page
 Route::get('/', [HomeController::class, "index"])->name("home");
@@ -67,7 +72,11 @@ Route::get('auth/google/callback', [SocialiteController::class, 'handleGoogleCal
 // Admin Panel
 Route::group(["as" => 'admin.', 'prefix' => 'admin', 'middleware' => ['auth', 'admin']], function(){
   Route::get('/', [DashboardController::class, "index"])->name('dashboard');
-  Route::get('/notifications/unread', [DashboardController::class, "notifications"])->name('notifications.unread');
+  Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+  Route::get('/notifications/unread', [NotificationController::class, 'unread'])->name('notifications.unread');
+  Route::post('/notifications/{notification}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+  Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.read-all');
+  Route::delete('/notifications/{notification}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
   Route::get('/reports', [ReportController::class, "index"])->name('reports');
   Route::post('/reports/payment', [ReportController::class, "printPaymentReports"])->name('reports.payment');
 

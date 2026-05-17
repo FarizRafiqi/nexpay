@@ -3,8 +3,10 @@ import GuestLayout from '@/Layouts/GuestLayout';
 import { Card, CardContent } from '@/components/ui/card';
 import { motion } from 'framer-motion';
 import { Shield, Target, Zap } from 'lucide-react';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export default function AboutUs() {
+    const { t } = useTranslation();
     return (
         <GuestLayout>
             <Head title="Tentang Kami" />
@@ -16,11 +18,9 @@ export default function AboutUs() {
                         animate={{ opacity: 1, y: 0 }}
                         className="max-w-3xl mx-auto"
                     >
-                        <h1 className="text-4xl lg:text-5xl font-black mb-6 dark:text-white">Tentang Nexpay</h1>
+                        <h1 className="text-4xl lg:text-5xl font-black mb-6 dark:text-white">{t('about.title')}</h1>
                         <p className="text-xl text-slate-600 dark:text-slate-300 leading-relaxed">
-                            Nexpay (sebelumnya dikenal sebagai Megamendung) adalah platform pembayaran listrik pascabayar berbasis web 
-                            yang dirancang untuk memudahkan siapa pun dalam mengecek informasi tagihan dan membayar tagihan listrik 
-                            secara mudah, aman, dan efisien.
+                            {t('about.desc')}
                         </p>
                     </motion.div>
                 </div>
@@ -30,9 +30,9 @@ export default function AboutUs() {
                 <div className="container px-4 mx-auto">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-24">
                         {[
-                            { icon: Target, title: "Misi Kami", desc: "Memberikan akses termudah bagi seluruh masyarakat untuk mengelola tagihan listrik mereka tanpa hambatan." },
-                            { icon: Shield, title: "Keamanan Utama", desc: "Menjaga integritas data dan keamanan transaksi setiap pelanggan dengan standar enkripsi terbaru." },
-                            { icon: Zap, title: "Kecepatan Layanan", desc: "Proses verifikasi otomatis yang memungkinkan pembayaran Anda terdeteksi dalam hitungan detik." }
+                            { icon: Target, title: t('about.mission_title'), desc: t('about.mission_desc') },
+                            { icon: Shield, title: t('about.security_title'), desc: t('about.security_desc') },
+                            { icon: Zap, title: t('about.speed_title'), desc: t('about.speed_desc') }
                         ].map((item, i) => (
                             <motion.div 
                                 key={i}

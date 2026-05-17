@@ -8,29 +8,17 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { HelpCircle, MessageSquare } from 'lucide-react';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export default function FAQ() {
+    const { t } = useTranslation();
+
     const faqs = [
-        {
-            q: "Apa itu Nexpay?",
-            a: "Nexpay adalah platform digital terintegrasi untuk pembayaran tagihan listrik PLN pascabayar secara online dengan proses yang cepat dan aman."
-        },
-        {
-            q: "Berapa biaya admin per transaksi?",
-            a: "Biaya administrasi bervariasi tergantung pada metode pembayaran yang dipilih, namun kami menjamin biaya yang sangat kompetitif dan transparan."
-        },
-        {
-            q: "Apakah Nexpay tersedia 24 jam?",
-            a: "Ya, sistem kami beroperasi 24/7. Anda dapat mengecek tagihan dan melakukan pembayaran kapan saja dan di mana saja."
-        },
-        {
-            q: "Bagaimana jika pembayaran saya belum terverifikasi?",
-            a: "Pastikan Anda telah menekan tombol 'Saya Sudah Bayar' dan mengunggah bukti transfer jika diperlukan. Jika dalam 10 menit status belum berubah, silakan hubungi bantuan pelanggan kami."
-        },
-        {
-            q: "Apakah data saya aman di Nexpay?",
-            a: "Sangat aman. Kami menggunakan enkripsi SSL tingkat tinggi untuk memastikan setiap data identitas dan transaksi Anda terlindungi dengan maksimal."
-        }
+        { q: t('faq.q1'), a: t('faq.a1') },
+        { q: t('faq.q2'), a: t('faq.a2') },
+        { q: t('faq.q3'), a: t('faq.a3') },
+        { q: t('faq.q4'), a: t('faq.a4') },
+        { q: t('faq.q5'), a: t('faq.a5') },
     ];
 
     return (
@@ -47,9 +35,9 @@ export default function FAQ() {
                         <div className="w-20 h-20 bg-primary/10 rounded-[2rem] flex items-center justify-center mx-auto mb-8">
                             <HelpCircle className="w-10 h-10 text-primary" />
                         </div>
-                        <h1 className="text-4xl lg:text-5xl font-black mb-6 dark:text-white">Ada Pertanyaan?</h1>
+                        <h1 className="text-4xl lg:text-5xl font-black mb-6 dark:text-white">{t('faq.title')}</h1>
                         <p className="text-lg text-slate-600 dark:text-slate-400">
-                            Kami telah merangkum beberapa pertanyaan yang paling sering diajukan untuk membantu Anda.
+                            {t('faq.subtitle')}
                         </p>
                     </motion.div>
                 </div>
@@ -85,12 +73,12 @@ export default function FAQ() {
                                     <MessageSquare className="w-6 h-6 text-primary" />
                                 </div>
                                 <div>
-                                    <h4 className="font-bold dark:text-white">Masih butuh bantuan?</h4>
-                                    <p className="text-sm text-slate-500 dark:text-slate-400">Tim support kami siap membantu Anda.</p>
+                                    <h4 className="font-bold dark:text-white">{t('faq.help_title')}</h4>
+                                    <p className="text-sm text-slate-500 dark:text-slate-400">{t('faq.help_desc')}</p>
                                 </div>
                             </div>
                             <button className="px-8 h-12 bg-primary text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:scale-105 transition-transform cursor-pointer">
-                                Chat Sekarang
+                                {t('faq.chat_now')}
                             </button>
                         </div>
                     </div>

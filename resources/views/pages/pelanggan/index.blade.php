@@ -12,11 +12,9 @@
           <img src="{{ asset('assets/img/ilustrasi/mobile-payment-illustration@2x.png') }}" class="ilustrasi-mobile-payment" alt="Mobile Payment Illustration" width="300px">
         </div>
         <div class="col-md-7 col-lg-6 right-side d-md-inline-block d-none">
-          <h1 class="jumbotron-header">Penuhi Kebutuhan Listrik Kamu</h1>
+          <h1 class="jumbotron-header">@lang('messages.landing.jumbotron_header')</h1>
           <p class="lead">
-            Kini cek dan bayar tagihan listrik PLN tidak perlu keluar <br>
-            rumah. Kamu bisa melakukan itu dengan mudah di <br>
-            website MegaMendung.
+            @lang('messages.landing.jumbotron_text')
           </p>
           <img src="{{ asset('assets/img/icopln.png') }}" alt="ICON PLN" width="43" height="63">
         </div>
@@ -31,7 +29,7 @@
     <div class="d-flex justify-content-md-center">
       <div class="card card-input-no-meteran p-2">
         <div class="card-body">
-          <label for="#inputIDPelanggan" class="mb-3">Cek Tagihan Listrik PLN Pascabayar</label>
+          <label for="#inputIDPelanggan" class="mb-3">@lang('messages.landing.cek_tagihan_label')</label>
           @livewire('check-bill')
         </div>
       </div>
@@ -39,15 +37,14 @@
     <!-- End of Input ID Pelanggan -->
 
     <section class="postpaid-instruction">
-      <h3 class="title text-center">Bagaimana Cara Bayar Tagihan Listrik di Mega Mendung</h3>
+      <h3 class="title text-center">@lang('messages.landing.how_to_title')</h3>
       <div id="carousel" class="carousel slide d-flex" data-ride="carousel">
         <div class="carousel-inner">
           <div class="carousel-item step step-one active">
             <div class="row">
               <div class="col col-8">
                 <p class="step-one-text">
-                  1. Siapkan Nomor Meter atau <br>
-                    ID Pelanggan Anda.
+                  @lang('messages.landing.step1')
                 </p>
               </div>
               <div class="col col-4">
@@ -59,8 +56,7 @@
             <div class="row">
               <div class="col col-8">
                 <p class="step-one-text">
-                  2. Buka website Mega Mendung <br>
-                  melalui desktop atau mobile.
+                  @lang('messages.landing.step2')
                 </p>
               </div>
               <div class="col col-4">
@@ -72,8 +68,7 @@
             <div class="row">
               <div class="col col-8">
                 <p class="step-one-text">
-                3. Kemudian masukkan nomor meter <br>
-                  atau ID Pelanggan.
+                @lang('messages.landing.step3')
                 </p>
               </div>
               <div class="col col-4">
@@ -85,7 +80,7 @@
             <div class="row">
               <div class="col col-8">
                 <p class="step-one-text">
-                  4. Klik tombol <strong>Bayar</strong>.
+                  @lang('messages.landing.step4')
                 </p>
               </div>
               <div class="col col-4">
@@ -96,38 +91,35 @@
         </div>
         <a class="carousel-control-prev" href="#carousel" role="button" data-slide="prev">
           <span class="carousel-control-prev-icon p-4"></span>
-          <span class="sr-only">Previous</span>
+          <span class="sr-only">@lang('messages.landing.previous')</span>
         </a>
         <a class="carousel-control-next" href="#carousel" role="button" data-slide="next">
           <span class="carousel-control-next-icon p-4"></span>
-          <span class="sr-only">Next</span>
+          <span class="sr-only">@lang('messages.landing.next')</span>
         </a>
       </div>
     </section>
     <section class="megamendung-benefit">
       <h3 class="title text-center">
-        Kenapa Lebih Baik Pakai Mega Mendung
+        @lang('messages.landing.benefit_title')
       </h3>
       <div class="row px-5">
         <div class="col col-4 benefit-item first-benefit text-center">
           <img src="{{asset('assets/img/mm-icon/auto-payment-icon@2x.png')}}" alt="Auto Payment Icon" class="mx-auto" width="63" height="63">
           <p class="desc">
-            Terdapat fitur pembayaran <br>
-            tagihan otomatis
+            @lang('messages.landing.benefit1')
           </p>
         </div>
         <div class="col col-4 benefit-item second-benefit text-center">
           <img src="{{asset('assets/img/mm-icon/money-icon@2x.png')}}" alt="Money Icon" class="mx-auto" width="80" height="60">
           <p class="desc">
-            Dapatkan cashback/bonus <br>
-            tiap transaksi
+            @lang('messages.landing.benefit2')
           </p>
         </div>
         <div class="col col-4 benefit-item third-benefit text-center">
           <img src="{{asset('assets/img/mm-icon/wallet-icon@2x.png')}}" alt="Wallet Icon" class="mx-auto" width="61" height="60">
           <p class="desc">
-            Tersedia berbagai metode <br>
-            pembayaran
+            @lang('messages.landing.benefit3')
           </p>
         </div>
       </div>

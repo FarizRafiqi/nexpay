@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\ActivityLog;
 use App\Models\Bill;
 use App\Models\Payment;
 use App\Models\PaymentHistory;
@@ -55,30 +54,8 @@ class DashboardController extends Controller
         ]);
     }
 
-    /**
-     * Method untuk mengatur tampilan dashboard
-     */
     public function settings(Request $request)
     {
         return Inertia::render('Admin/Settings');
-    }
-
-    public function notifications(Request $request)
-    {
-        $logs = ActivityLog::with('user')
-            ->latest()
-            ->take(10)
-            ->get()
-            ->map(function ($log) {
-                return [
-                    'id' => $log->id,
-                    'title' => ucfirst(str_replace('_', ' ', $log->tabel_referensi ?? 'Aktivitas')),
-                    'description' => $log->deskripsi,
-                    'time' => $log->created_at ? $log->created_at->diffForHumans() : '',
-                    'user' => $log->user?->nama ?? 'Sistem',
-                ];
-            });
-
-        return response()->json($logs);
     }
 }

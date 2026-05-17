@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Dashboard')
+@section('title', __('messages.admin.dashboard'))
 
 @push('addon-style')
 <script src="{{ asset('assets/plugin/Chart.js-3.0.2/chart.min.js') }}" charset="utf-8"></script>
@@ -20,10 +20,7 @@
                 </div>
                 <div class="col-8">
                   <h6 class="font-weight-bold">{{$totalPendapatan}}</h6>
-                  {{-- @if ($monthEarnings > 0)
-                    <h6 class="text-success font-weight-bold">+ {{$monthEarnings}} Bulan ini</h6>
-                  @endif --}}
-                  Total Pendapatan
+                  @lang('messages.admin.total_revenue')
                 </div>
               </div>
             </div>
@@ -43,7 +40,7 @@
                 </div>
                 <div class="col-8">
                   <h6 class="font-weight-bold">{{$payments->count()}}</h6>
-                  Total pembayaran
+                  @lang('messages.admin.total_payments')
                 </div>
               </div>
             </div>
@@ -59,8 +56,8 @@
                 </div>
                 <div class="col-8">
                   <h6 class="font-weight-bold">{{$payments->count()}}</h6>
-                  <div>Total pembayaran</div>
-                  <a href="{{route('admin.payments.index')}}" class="text-decoration-none">Lihat detail pembayaran</a>
+                  <div>@lang('messages.admin.total_payments')</div>
+                  <a href="{{route('admin.payments.index')}}" class="text-decoration-none">@lang('messages.admin.view_details')</a>
                 </div>
               </div>
             </div>
@@ -80,7 +77,7 @@
                 </div>
                 <div class="col-8">
                   <h6 class="font-weight-bold">{{$bills->where('status', 'LUNAS')->count()}}</h6>
-                  Tagihan listrik lunas
+                  @lang('messages.admin.paid_bills')
                 </div>
               </div>
             </div>
@@ -100,7 +97,7 @@
                 </div>
                 <div class="col-8">
                   <h6 class="font-weight-bold">{{$bills->where('status', 'BELUM LUNAS')->count()}}</h6>
-                  Tagihan listrik belum lunas
+                  @lang('messages.admin.unpaid_bills')
                 </div>
               </div>
             </div>
@@ -120,22 +117,22 @@
       @endif
       <!-- End of Bill Not Paid Off Overview -->
       <div class="col-12">
-        <h2 class="text-center mt-5">Histori Pembayaran</h2>
+        <h2 class="text-center mt-5">@lang('messages.admin.payment_history')</h2>
         <div class="card my-5 ">
           <div class="card-body table-responsive">
             <table class="table table-striped table-bordered w-100" id="paymentHistories">
               <thead>
                 <tr>
-                  <th>ID</th>
-                  <th>Nama Customer</th>
-                  <th>Nama Pelanggan PLN</th>
-                  <th>ID Tagihan</th>
-                  <th>Tanggal Bayar</th>
-                  <th>Biaya Admin</th>
-                  <th>Denda</th>
-                  <th>Total Bayar</th>
-                  <th>Metode Pembayaran</th>
-                  <th>Status</th>
+                  <th>@lang('messages.dt.id')</th>
+                  <th>@lang('messages.dt.customer_name')</th>
+                  <th>@lang('messages.dt.pln_customer_name')</th>
+                  <th>@lang('messages.dt.bill_id')</th>
+                  <th>@lang('messages.dt.payment_date')</th>
+                  <th>@lang('messages.dt.admin_fee')</th>
+                  <th>@lang('messages.dt.penalty')</th>
+                  <th>@lang('messages.dt.total_amount')</th>
+                  <th>@lang('messages.dt.payment_method')</th>
+                  <th>@lang('messages.dt.status')</th>
                 </tr>
               </thead>
             </table>

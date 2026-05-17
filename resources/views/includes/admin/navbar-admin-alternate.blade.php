@@ -8,13 +8,19 @@
         {{ ucwords(auth()->user()->username) }}
       </a>
       <ul class="dropdown-menu dropdown-menu-right">
-        <li><a class="dropdown-item" href="{{route('admin.profile.index')}}">Profile</a></li>
-        <li><a class="dropdown-item" href="{{route('admin.settings')}}">Setting</a></li>
+        <li><a class="dropdown-item" href="{{route('admin.profile.index')}}">@lang('messages.admin.profile')</a></li>
+        <li><a class="dropdown-item" href="{{route('admin.settings')}}">@lang('messages.admin.settings')</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li>
+          <a class="dropdown-item" href="{{ url('lang/' . (App::getLocale() === 'id' ? 'en' : 'id')) }}">
+            {{ App::getLocale() === 'id' ? 'English' : 'Indonesia' }}
+          </a>
+        </li>
         <li><hr class="dropdown-divider"></li>
         <li>
           <form action="{{route('logout')}}" method="post" class="dropdown-item">
             @csrf
-            <button class="btn p-0" id="btnLogout">Logout</button>
+            <button class="btn p-0" id="btnLogout">@lang('messages.admin.logout')</button>
           </form>
         </li>
       </ul>

@@ -4,15 +4,10 @@ namespace App\Observers;
 
 use App\Models\ActivityLog;
 use App\Models\PaymentMethod;
+use App\Services\NotificationService;
 
 class PaymentMethodObserver
 {
-    /**
-     * Handle the PaymentMethod "created" event.
-     *
-     * @param  \App\Models\PaymentMethod  $paymentMethod
-     * @return void
-     */
     public function created(PaymentMethod $paymentMethod)
     {
         ActivityLog::create([
@@ -23,12 +18,6 @@ class PaymentMethodObserver
         ]);
     }
 
-    /**
-     * Handle the PaymentMethod "updated" event.
-     *
-     * @param  \App\Models\PaymentMethod  $paymentMethod
-     * @return void
-     */
     public function updated(PaymentMethod $paymentMethod)
     {
         ActivityLog::create([
@@ -37,14 +26,16 @@ class PaymentMethodObserver
             'id_referensi' => $paymentMethod->id,
             'deskripsi' => 'Memperbarui data metode pembayaran'
         ]);
+
+        if ($paymentMethod->isDirty('is_active')) {
+            NotificationService::paymentMethodToggled(
+                $paymentMethod,
+                $paymentMethod->getOriginal('is_active') ? 'active' : 'inactive',
+                $paymentMethod->is_active ? 'active' : 'inactive'
+            );
+        }
     }
 
-    /**
-     * Handle the PaymentMethod "deleted" event.
-     *
-     * @param  \App\Models\PaymentMethod  $paymentMethod
-     * @return void
-     */
     public function deleted(PaymentMethod $paymentMethod)
     {
         ActivityLog::create([
@@ -55,12 +46,6 @@ class PaymentMethodObserver
         ]);
     }
 
-    /**
-     * Handle the PaymentMethod "restored" event.
-     *
-     * @param  \App\Models\PaymentMethod  $paymentMethod
-     * @return void
-     */
     public function restored(PaymentMethod $paymentMethod)
     {
         ActivityLog::create([
@@ -71,14 +56,7 @@ class PaymentMethodObserver
         ]);
     }
 
-    /**
-     * Handle the PaymentMethod "force deleted" event.
-     *
-     * @param  \App\Models\PaymentMethod  $paymentMethod
-     * @return void
-     */
     public function forceDeleted(PaymentMethod $paymentMethod)
     {
-        //
     }
 }

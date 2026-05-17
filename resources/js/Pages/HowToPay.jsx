@@ -8,48 +8,51 @@ import {
 	Info
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useTranslation } from '@/hooks/useTranslation';
 
 
 export default function HowToPay() {
+	const { t } = useTranslation();
+
 	const steps = [
 		{
-			title: "Siapkan Data",
-			desc: "Siapkan nomor meter atau ID Pelanggan Anda (terdiri dari 11-12 digit angka).",
+			title: t('howtopay.siapkan_data'),
+			desc: t('howtopay.siapkan_data_desc'),
 			img: "/assets/img/ilustrasi/ilustrasi-meteran-listrik@2x.png"
 		},
 		{
-			title: "Masukkan ID",
-			desc: "Buka beranda Nexpay dan masukkan nomor meter atau ID Pelanggan Anda di kolom yang tersedia.",
+			title: t('howtopay.masukkan_id'),
+			desc: t('howtopay.masukkan_id_desc'),
 			img: "/assets/img/ilustrasi/ilustrasi-input-id-pelanggan@2x.png"
 		},
 		{
-			title: "Cek Tagihan",
-			desc: "Tunggu sistem menarik data tagihan Anda dari database PLN. Rincian biaya akan muncul secara otomatis.",
+			title: t('howtopay.cek_tagihan'),
+			desc: t('howtopay.cek_tagihan_desc'),
 			img: "/assets/img/ilustrasi/payment-bill-time-illustration@2x.png"
 		},
 		{
-			title: "Klik Bayar",
-			desc: "Tekan tombol 'Bayar' yang muncul di bawah rincian tagihan Anda.",
+			title: t('howtopay.klik_bayar'),
+			desc: t('howtopay.klik_bayar_desc'),
 			img: "/assets/img/ilustrasi/ilustrasi-klik-tombol-cek-tagihan@2x.png"
 		},
 		{
-			title: "Pilih Metode",
-			desc: "Pilih metode pembayaran yang paling nyaman bagi Anda (Transfer Bank, E-Wallet, dll).",
+			title: t('howtopay.pilih_metode'),
+			desc: t('howtopay.pilih_metode_desc'),
 			img: "/assets/img/ilustrasi/mobile-payment-illustration@2x.png"
 		},
 		{
-			title: "Transfer",
-			desc: "Lakukan transfer sesuai dengan nominal yang tertera pada instruksi pembayaran.",
+			title: t('howtopay.transfer'),
+			desc: t('howtopay.transfer_desc'),
 			img: "/assets/img/ilustrasi/search-illustration@2x.png"
 		},
 		{
-			title: "Konfirmasi",
-			desc: "Setelah melakukan transfer, tekan tombol 'Saya Sudah Bayar' untuk proses verifikasi.",
+			title: t('howtopay.konfirmasi'),
+			desc: t('howtopay.konfirmasi_desc'),
 			img: "/assets/img/ilustrasi/user-profile-illustration@2x.png"
 		},
 		{
-			title: "Selesai",
-			desc: "Sistem akan memverifikasi pembayaran Anda. Status akan berubah menjadi 'Berhasil' di riwayat transaksi.",
+			title: t('howtopay.selesai'),
+			desc: t('howtopay.selesai_desc'),
 			icon: CheckCircle2
 		}
 	];
@@ -84,14 +87,13 @@ export default function HowToPay() {
 					>
 						<div className="inline-flex items-center gap-2 px-4 py-2 mb-6 bg-primary/10 rounded-full border border-primary/20">
 							<Info className="w-4 h-4 text-primary" />
-							<span className="text-sm font-bold text-primary tracking-wide uppercase">Panduan Lengkap</span>
+							<span className="text-sm font-bold text-primary tracking-wide uppercase">{t('howtopay.badge')}</span>
 						</div>
-						<h1 className="text-4xl lg:text-6xl font-black mb-8 dark:text-white leading-tight">
-							Bagaimana Cara <br />
-							Membayar di <span className="text-primary">Nexpay?</span>
+						<h1 className="text-4xl lg:text-6xl font-black mb-8 dark:text-white leading-tight"
+							dangerouslySetInnerHTML={{ __html: t('howtopay.title') }}>
 						</h1>
 						<p className="text-lg text-slate-600 dark:text-slate-400 max-w-lg mx-auto">
-							Ikuti langkah-langkah praktis di bawah ini untuk pengalaman pembayaran listrik yang lebih lancar.
+							{t('howtopay.subtitle')}
 						</p>
 					</motion.div>
 				</div>
@@ -139,12 +141,12 @@ export default function HowToPay() {
 							<Search className="w-64 h-64 -mr-32 -mt-32" />
 						</div>
 						<div className="text-center lg:text-left relative z-10">
-							<h2 className="text-4xl font-black mb-4">Punya Pertanyaan Lain?</h2>
-							<p className="text-slate-400 dark:text-slate-300 text-lg max-w-md">Tim kami siap membantu Anda 24/7 jika mengalami kendala teknis.</p>
+							<h2 className="text-4xl font-black mb-4">{t('howtopay.cta_title')}</h2>
+							<p className="text-slate-400 dark:text-slate-300 text-lg max-w-md">{t('howtopay.cta_desc')}</p>
 						</div>
 						<div className="flex gap-4 relative z-10">
 							<Button size="lg" className="bg-white text-slate-900 hover:bg-slate-100 rounded-2xl px-12 h-16 text-lg font-bold shadow-xl">
-								Hubungi CS
+								{t('howtopay.contact_cs')}
 							</Button>
 						</div>
 					</motion.div>

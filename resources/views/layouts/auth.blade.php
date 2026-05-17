@@ -12,6 +12,11 @@
 <body>
   @include('includes.navbar-alternate')
   @yield('content')
+  <div class="text-center py-2">
+    <a href="{{ url('lang/' . (App::getLocale() === 'id' ? 'en' : 'id')) }}" class="text-white text-decoration-none small opacity-75">
+      {{ App::getLocale() === 'id' ? 'English' : 'Indonesia' }}
+    </a>
+  </div>
   <script src="{{ asset('js/app.js') }}"></script>
   @stack('script')
 </body>

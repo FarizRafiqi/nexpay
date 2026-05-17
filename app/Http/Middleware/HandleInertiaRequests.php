@@ -2,8 +2,9 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\ActivityLog;
+use App\Models\Notification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -19,24 +20,28 @@ class HandleInertiaRequests extends Middleware
     {
         $notifications = [];
         if ($request->user()) {
-            $logs = ActivityLog::with('user')
+            $notifications = Notification::unread()
                 ->latest()
                 ->take(10)
                 ->get()
-                ->map(function ($log) {
-                    $time = $log->created_at ? $log->created_at->diffForHumans() : '';
+                ->map(function ($n) {
                     return [
-                        'id' => $log->id,
-                        'title' => ucfirst(str_replace('_', ' ', $log->tabel_referensi ?? 'Aktivitas')),
-                        'description' => $log->deskripsi,
-                        'time' => $time,
-                        'user' => $log->user?->nama ?? 'Sistem',
+                        'id' => $n->id,
+                        'type' => $n->type,
+                        'title' => $n->title,
+                        'description' => $n->message,
+                        'time' => $n->created_at ? $n->created_at->diffForHumans() : '',
                     ];
                 });
-            $notifications = $logs;
         }
 
+        $locale = App::getLocale();
+
         return array_merge(parent::share($request), [
+            'locale' => $locale,
+            'translations' => [
+                'messages' => __('messages'),
+            ],
             'auth' => [
                 'user' => $request->user() ? [
                     'id' => $request->user()->id,

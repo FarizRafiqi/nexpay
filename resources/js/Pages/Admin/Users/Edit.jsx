@@ -4,8 +4,10 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ArrowLeft, Save } from 'lucide-react';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export default function Edit({ auth, user, levels }) {
+    const { t } = useTranslation();
     const { data, setData, put, processing, errors } = useForm({
         nama: user.nama,
         username: user.username,
@@ -22,18 +24,18 @@ export default function Edit({ auth, user, levels }) {
 
     return (
         <AuthenticatedLayout auth={auth}>
-            <Head title="Edit User" />
+            <Head title={t('admin.users')} />
 
             <div className="flex-1 flex flex-col gap-4">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h2 className="text-xl md:text-2xl font-black tracking-tight">Edit User</h2>
+                        <h2 className="text-xl md:text-2xl font-black tracking-tight">{t('admin.users')}</h2>
                         <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Ubah data pengguna #{user.id}</p>
                     </div>
                     <Link href={route('admin.users.index')}>
                         <Button variant="outline">
                             <ArrowLeft className="w-4 h-4" />
-                            Kembali
+                            {t('general.back')}
                         </Button>
                     </Link>
                 </div>
@@ -42,7 +44,7 @@ export default function Edit({ auth, user, levels }) {
                     <CardContent className="p-6">
                         <form onSubmit={handleSubmit} className="max-w-lg space-y-5">
                             <div className="space-y-2">
-                                <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500">Nama Lengkap</label>
+                                <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500">{t('dt.full_name')}</label>
                                 <Input
                                     value={data.nama}
                                     onChange={(e) => setData('nama', e.target.value)}
@@ -51,7 +53,7 @@ export default function Edit({ auth, user, levels }) {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500">Username</label>
+                                <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500">{t('dt.username')}</label>
                                 <Input
                                     value={data.username}
                                     onChange={(e) => setData('username', e.target.value)}
@@ -60,7 +62,7 @@ export default function Edit({ auth, user, levels }) {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500">Email</label>
+                                <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500">{t('dt.email')}</label>
                                 <Input
                                     type="email"
                                     value={data.email}
@@ -70,7 +72,7 @@ export default function Edit({ auth, user, levels }) {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500">Password (kosongkan jika tidak diubah)</label>
+                                <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500">{t('dt.password')} ({t('dt.leave_empty')})</label>
                                 <Input
                                     type="password"
                                     placeholder="Biarkan kosong"
@@ -81,7 +83,7 @@ export default function Edit({ auth, user, levels }) {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500">Konfirmasi Password</label>
+                                <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500">{t('dt.confirm_password')}</label>
                                 <Input
                                     type="password"
                                     placeholder="Ulangi password"
@@ -91,13 +93,13 @@ export default function Edit({ auth, user, levels }) {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500">Level</label>
+                                <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500">{t('dt.level')}</label>
                                 <select
                                     className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                                     value={data.level_id}
                                     onChange={(e) => setData('level_id', e.target.value)}
                                 >
-                                    <option value="">Pilih Level</option>
+                                    <option value="">{t('general.select')} {t('dt.level')}</option>
                                     {levels.map((level) => (
                                         <option key={level.id} value={level.id}>{level.level}</option>
                                     ))}
@@ -108,10 +110,10 @@ export default function Edit({ auth, user, levels }) {
                             <div className="flex items-center gap-2 pt-2">
                                 <Button type="submit" disabled={processing}>
                                     <Save className="w-4 h-4" />
-                                    Update
+                                    {t('general.update')}
                                 </Button>
                                 <Link href={route('admin.users.index')}>
-                                    <Button type="button" variant="ghost">Batal</Button>
+                                    <Button type="button" variant="ghost">{t('general.cancel')}</Button>
                                 </Link>
                             </div>
                         </form>

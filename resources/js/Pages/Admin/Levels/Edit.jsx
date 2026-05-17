@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ArrowLeft, Save, Check } from 'lucide-react';
+import { useTranslation } from '@/hooks/useTranslation';
 
 function groupPermissions(perms) {
   const groups = {}
@@ -18,6 +19,7 @@ function groupPermissions(perms) {
 }
 
 export default function Edit({ auth, level, permissions }) {
+  const { t } = useTranslation();
   const { data, setData, put, processing, errors } = useForm({
     level: level.level,
     permissions: level.permissions ? level.permissions.map((p) => p.id) : [],
@@ -53,18 +55,18 @@ export default function Edit({ auth, level, permissions }) {
 
   return (
     <AuthenticatedLayout auth={auth}>
-      <Head title="Edit Level" />
+      <Head title={t('admin.levels')} />
 
       <div className="flex-1 flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-xl md:text-2xl font-black tracking-tight">Edit Level</h2>
+            <h2 className="text-xl md:text-2xl font-black tracking-tight">{t('admin.levels')}</h2>
             <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{level.level}</p>
           </div>
           <Link href={route('admin.levels.index')}>
             <Button variant="outline">
               <ArrowLeft className="w-4 h-4" />
-              Kembali
+              {t('general.back')}
             </Button>
           </Link>
         </div>
@@ -73,7 +75,7 @@ export default function Edit({ auth, level, permissions }) {
           <CardContent className="p-6">
             <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">
               <div className="space-y-2">
-                <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500">Nama Level</label>
+                <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500">{t('dt.level')}</label>
                 <Input
                   placeholder="Contoh: Admin"
                   value={data.level}
@@ -83,7 +85,7 @@ export default function Edit({ auth, level, permissions }) {
               </div>
 
               <div className="space-y-4">
-                <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500">Permissions</label>
+                <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500">{t('admin.permissions')}</label>
                 {groups.map(([groupKey, group]) => {
                   const allSelected = group.items.every((p) => data.permissions.includes(p.id))
                   return (
@@ -102,7 +104,7 @@ export default function Edit({ auth, level, permissions }) {
                             checked={allSelected}
                             onChange={() => toggleGroup(group.items)}
                           />
-                          Pilih Semua
+                          {t('general.select_all')}
                         </label>
                       </div>
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-1 p-3">
@@ -136,10 +138,10 @@ export default function Edit({ auth, level, permissions }) {
               <div className="flex items-center gap-2 pt-2">
                 <Button type="submit" disabled={processing}>
                   <Save className="w-4 h-4" />
-                  Simpan
+                  {t('general.update')}
                 </Button>
                 <Link href={route('admin.levels.index')}>
-                  <Button type="button" variant="ghost">Batal</Button>
+                  <Button type="button" variant="ghost">{t('general.cancel')}</Button>
                 </Link>
               </div>
             </form>

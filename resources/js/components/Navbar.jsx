@@ -3,13 +3,16 @@ import { Link, usePage } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from './ThemeToggle';
 import { CredentialsModal } from './CredentialsModal';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { Zap, Menu, X, LayoutDashboard, UserPlus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from '@/hooks/useTranslation';
 
 
 export default function Navbar() {
     const { url } = usePage();
     const { auth } = usePage().props;
+    const { t } = useTranslation();
     const [isScrolled, setIsScrolled] = React.useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
@@ -20,9 +23,9 @@ export default function Navbar() {
     }, []);
 
     const navLinks = [
-        { name: 'Tentang Kami', href: '/about-us' },
-        { name: 'Cara Bayar', href: '/how-to-pay' },
-        { name: 'FAQ', href: '/faq' },
+        { name: t('nav.about'), href: '/about-us' },
+        { name: t('nav.how_to_pay'), href: '/how-to-pay' },
+        { name: t('nav.faq'), href: '/faq' },
     ];
 
     const isActive = (href) => url === href;
@@ -62,24 +65,25 @@ export default function Navbar() {
                             <CredentialsModal />
                             <div className="w-px h-4 bg-slate-200 dark:bg-slate-800 mx-1" />
                             <ThemeToggle />
+                            <LanguageSwitcher variant="minimal" />
                         </div>
 
                         {auth && auth.user ? (
                             <Button asChild className="rounded-xl px-6 h-11 font-bold shadow-lg shadow-primary/25 hover:scale-105 active:scale-95 transition-all">
                                 <Link href="/admin">
                                     <LayoutDashboard className="w-4 h-4 mr-2" />
-                                    Dashboard
+                                    {t('nav.dashboard')}
                                 </Link>
                             </Button>
                         ) : (
                             <div className="hidden sm:flex items-center gap-3">
                                 <Button variant="ghost" asChild className="rounded-xl font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
-                                    <Link href="/login">Masuk</Link>
+                                    <Link href="/login">{t('nav.login')}</Link>
                                 </Button>
                                 <Button asChild className="rounded-xl px-6 h-11 font-bold shadow-lg shadow-primary/25 hover:scale-105 active:scale-95 transition-all">
                                     <Link href="/register">
                                         <UserPlus className="w-4 h-4 mr-2" />
-                                        Daftar
+                                        {t('nav.register')}
                                     </Link>
                                 </Button>
                             </div>
@@ -118,18 +122,19 @@ export default function Navbar() {
                         </div>
                         <div className="h-px bg-slate-100 dark:bg-slate-800" />
                         <div className="flex items-center justify-between">
-                            <span className="text-sm font-bold text-slate-500 uppercase tracking-widest">Settings</span>
+                            <span className="text-sm font-bold text-slate-500 uppercase tracking-widest">{t('nav.settings')}</span>
                             <div className="flex items-center gap-4">
                                 <ThemeToggle />
                                 <CredentialsModal />
+                                <LanguageSwitcher variant="minimal" />
                             </div>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <Button variant="outline" asChild className="rounded-xl h-12 font-bold border-slate-200 dark:border-slate-800">
-                                <Link href="/login" onClick={() => setMobileMenuOpen(false)}>Masuk</Link>
+                                <Link href="/login" onClick={() => setMobileMenuOpen(false)}>{t('nav.login')}</Link>
                             </Button>
                             <Button asChild className="rounded-xl h-12 font-bold">
-                                <Link href="/register" onClick={() => setMobileMenuOpen(false)}>Daftar</Link>
+                                <Link href="/register" onClick={() => setMobileMenuOpen(false)}>{t('nav.register')}</Link>
                             </Button>
                         </div>
                     </motion.div>

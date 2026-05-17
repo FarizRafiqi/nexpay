@@ -16,21 +16,21 @@
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav ml-auto">
 				<li class="nav-item {{Route::is('home') ? 'active' : ''}}">
-					<a class="nav-link" href="{{route('home')}}">Home <span class="sr-only">(current)</span></a
+					<a class="nav-link" href="{{route('home')}}">@lang('messages.nav.home') <span class="sr-only">(current)</span></a
 					>
 				</li>
 				<li class="nav-item {{Route::is('about_us') ? 'active' : ''}}">
-						<a class="nav-link" href="{{route('about_us')}}">Tentang Kami</a>
+						<a class="nav-link" href="{{route('about_us')}}">@lang('messages.nav.about')</a>
 				</li>
 				<li class="nav-item {{Route::is(['transaction-history', 'transaction-history.*']) ? 'active' : ''}}">
-						<a class="nav-link" href="{{route('transaction-history')}}">Riwayat Transaksi</a>
+						<a class="nav-link" href="{{route('transaction-history')}}">@lang('messages.nav.transaction_history')</a>
 				</li>
 				@guest
 					<li class="nav-item">
-						<a href="{{route('register')}}" class="nav-link btn btn-primary-custom">Register</a>
+						<a href="{{route('register')}}" class="nav-link btn btn-primary-custom">@lang('messages.nav.register')</a>
 					</li>
 					<li class="nav-item">
-						<a href="{{route('login')}}" class="nav-link">Login</a>
+						<a href="{{route('login')}}" class="nav-link">@lang('messages.nav.login')</a>
 					</li>
 				@endguest
 
@@ -38,7 +38,7 @@
 					@if(auth()->user()->isAdmin() || auth()->user()->isBank())
 						<li class="nav-item">
 							<a href="{{route('admin.dashboard')}}" class="nav-link">
-								Dashboard
+								@lang('messages.nav.dashboard')
 							</a>
 						</li>
 					@endif
@@ -46,11 +46,16 @@
 							<form action="{{route('logout')}}" method="post">
 								@csrf
 								<button class="nav-link btn btn-primary-custom">
-									Logout
+									@lang('messages.nav.logout')
 								</button>
 							</form>
 						</li>
 				@endauth
+				<li class="nav-item d-flex align-items-center">
+					<a href="{{ url('lang/' . (App::getLocale() === 'id' ? 'en' : 'id')) }}" class="nav-link text-muted small">
+						{{ App::getLocale() === 'id' ? 'EN' : 'ID' }}
+					</a>
+				</li>
 				</ul>
 		</div>
 	</nav>

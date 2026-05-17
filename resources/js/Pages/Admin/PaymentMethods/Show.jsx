@@ -4,8 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, CreditCard } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export default function PaymentMethodsShow({ auth, paymentMethod }) {
+  const { t } = useTranslation();
   const details = [
     { label: 'Nama', value: paymentMethod.nama },
     { label: 'Slug', value: paymentMethod.slug },
@@ -13,7 +15,7 @@ export default function PaymentMethodsShow({ auth, paymentMethod }) {
 
   return (
     <AuthenticatedLayout auth={auth}>
-      <Head title="Detail Metode Pembayaran" />
+      <Head title={t('admin.payment_methods')} />
       <div className="flex-1 flex flex-col gap-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
           <div className="flex items-center gap-3">
@@ -24,7 +26,7 @@ export default function PaymentMethodsShow({ auth, paymentMethod }) {
             </Link>
             <div>
               <h2 className="text-xl md:text-2xl font-black tracking-tight">
-                Detail <span className="text-primary italic">Metode Pembayaran</span>
+                <span>{t('admin.payment_methods')}</span>
               </h2>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
                 {paymentMethod.nama}
@@ -41,7 +43,7 @@ export default function PaymentMethodsShow({ auth, paymentMethod }) {
             <CardHeader>
               <CardTitle className="text-sm font-bold flex items-center gap-2">
                 <CreditCard className="w-4 h-4 text-primary" />
-                Informasi Metode Pembayaran
+                {t('admin.payment_methods')}
               </CardTitle>
             </CardHeader>
             <CardContent>

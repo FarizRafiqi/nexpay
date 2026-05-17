@@ -4,22 +4,24 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Pencil, Trash2, ZapOff } from 'lucide-react';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export default function Index({ auth, tariffs }) {
+    const { t } = useTranslation();
     return (
         <AuthenticatedLayout auth={auth}>
-            <Head title="Tarif Listrik" />
+            <Head title={t('admin.tariffs')} />
 
             <div className="flex-1 flex flex-col gap-4">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h2 className="text-xl md:text-2xl font-black tracking-tight">Tarif Listrik</h2>
-                        <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Kelola tarif listrik pelanggan</p>
+                        <h2 className="text-xl md:text-2xl font-black tracking-tight">{t('admin.tariffs')}</h2>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{t('admin.tariffs')}</p>
                     </div>
                     <Link href={route('admin.tariffs.create')}>
                         <Button>
                             <Plus className="w-4 h-4" />
-                            Tambah
+                            {t('general.create')}
                         </Button>
                     </Link>
                 </div>
@@ -29,24 +31,24 @@ export default function Index({ auth, tariffs }) {
                         {tariffs.length === 0 ? (
                             <div className="flex flex-col items-center justify-center py-16 text-slate-400">
                                 <ZapOff className="w-12 h-12 mb-3" />
-                                <p className="text-sm font-medium">Belum ada tarif</p>
+                                <p className="text-sm font-medium">{t('dt.no_data')}</p>
                             </div>
                         ) : (
                             <div className="overflow-x-auto">
                                 <table className="w-full">
                                     <thead>
                                         <tr className="border-b border-slate-100 dark:border-slate-800">
-                                            <th className="text-left px-4 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400">ID</th>
+                                            <th className="text-left px-4 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400">No.</th>
                                             <th className="text-left px-4 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400">Daya</th>
                                             <th className="text-left px-4 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400">Tarif per KWh</th>
                                             <th className="text-left px-4 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400">Jumlah Pelanggan</th>
-                                            <th className="text-right px-4 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400">Aksi</th>
+                                            <th className="text-right px-4 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400">{t('dt.actions')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {tariffs.map((tariff) => (
+                                        {tariffs.map((tariff, index) => (
                                             <tr key={tariff.id} className="border-b border-slate-50 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
-                                                <td className="px-4 py-3 text-xs font-mono text-slate-500">#{tariff.id}</td>
+                                                <td className="px-4 py-3 text-xs font-mono text-slate-500">{index + 1}</td>
                                                 <td className="px-4 py-3">
                                                     <Badge variant="outline" className="text-xs font-bold">{Number(tariff.daya).toLocaleString('id-ID')} VA</Badge>
                                                 </td>

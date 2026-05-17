@@ -48,7 +48,7 @@ class UserController extends Controller
                     ->toJson();
         }
 
-        return Inertia::render('Admin/Users/Index', ['users' => User::with('level')->paginate(10)]);
+        return Inertia::render('Admin/Users/Index', ['users' => User::with('level')->orderBy('id', 'asc')->paginate(10)]);
     }
 
     /**

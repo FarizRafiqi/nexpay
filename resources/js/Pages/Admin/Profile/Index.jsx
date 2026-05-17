@@ -6,18 +6,20 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { User, Mail, Calendar, Shield, Edit, MapPin } from 'lucide-react';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export default function ProfileIndex({ auth }) {
+	const { t } = useTranslation();
 	const user = auth.user;
 
 	return (
 		<AuthenticatedLayout>
-			<Head title="Profile" />
+			<Head title={t('admin.profile')} />
 
 			<div className="flex-1 flex flex-col gap-4">
 				<div>
 					<h2 className="text-xl md:text-2xl font-black text-slate-800 dark:text-white tracking-tight">
-						<span className="text-primary italic">Profile</span>
+						<span className="text-primary italic">{t('admin.profile')}</span>
 					</h2>
 					<p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
 						Informasi detail akun Anda.
@@ -84,7 +86,7 @@ export default function ProfileIndex({ auth }) {
 								<Link href={route('admin.profile.edit')}>
 									<Button variant="default">
 										<Edit className="w-4 h-4" />
-										Edit Profile
+										{t('general.edit')} {t('admin.profile')}
 									</Button>
 								</Link>
 							</div>

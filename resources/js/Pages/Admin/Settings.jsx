@@ -16,8 +16,10 @@ import {
   Eye,
   EyeOff,
 } from 'lucide-react';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export default function Settings({ auth }) {
+  const { t } = useTranslation();
   const [darkMode, setDarkMode] = React.useState(
     () => document.documentElement.classList.contains('dark')
   );
@@ -64,12 +66,12 @@ export default function Settings({ auth }) {
 
   return (
     <AuthenticatedLayout>
-      <Head title="Pengaturan" />
+      <Head title={t('admin.settings')} />
 
       <div className="flex-1 flex flex-col gap-4">
         <div>
           <h2 className="text-xl md:text-2xl font-black text-slate-800 dark:text-white tracking-tight">
-            <span className="text-primary italic">Pengaturan</span>
+            <span className="text-primary italic">{t('admin.settings')}</span>
           </h2>
           <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
             Kelola pengaturan aplikasi dan preferensi Anda.
@@ -235,7 +237,7 @@ export default function Settings({ auth }) {
                   </div>
                   <Button type="submit" className="w-full" disabled={processing}>
                     <Save className="w-4 h-4" />
-                    {processing ? 'Menyimpan...' : 'Simpan Password'}
+                    {processing ? t('general.loading') : t('settings.save_password')}
                   </Button>
                 </form>
               </CardContent>

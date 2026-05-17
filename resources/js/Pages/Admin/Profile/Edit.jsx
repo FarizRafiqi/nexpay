@@ -6,8 +6,10 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { User, Mail, Lock, Shield, Camera, Save, ArrowLeft, AlertCircle } from 'lucide-react';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export default function ProfileEdit({ auth, levels }) {
+	const { t } = useTranslation();
 	const { data, setData, put, processing, errors, progress } = useForm({
 		_nama: auth.user.nama || '',
 		_username: auth.user.username || '',
@@ -26,13 +28,13 @@ export default function ProfileEdit({ auth, levels }) {
 
 	return (
 		<AuthenticatedLayout>
-			<Head title="Edit Profile" />
+			<Head title={t('admin.profile')} />
 
 			<div className="flex-1 flex flex-col gap-4">
 				<div className="flex items-center justify-between">
 					<div>
 						<h2 className="text-xl md:text-2xl font-black text-slate-800 dark:text-white tracking-tight">
-							Edit <span className="text-primary italic">Profile</span>
+							{t('general.edit')} <span className="text-primary italic">{t('admin.profile')}</span>
 						</h2>
 						<p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
 							Perbarui informasi akun Anda.
@@ -41,7 +43,7 @@ export default function ProfileEdit({ auth, levels }) {
 					<Link href={route('admin.profile.index')}>
 						<Button variant="outline">
 							<ArrowLeft className="w-4 h-4" />
-							Kembali
+							{t('general.back')}
 						</Button>
 					</Link>
 				</div>
@@ -254,11 +256,11 @@ export default function ProfileEdit({ auth, levels }) {
 							<div className="flex flex-col gap-2">
 								<Button type="submit" disabled={processing} className="w-full">
 									<Save className="w-4 h-4" />
-									{processing ? 'Menyimpan...' : 'Simpan Perubahan'}
+									{processing ? t('general.loading') : t('general.save')}
 								</Button>
 								<Link href={route('admin.profile.index')} className="w-full">
 									<Button variant="outline" className="w-full" type="button">
-										Batal
+										{t('general.cancel')}
 									</Button>
 								</Link>
 							</div>

@@ -5,8 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ArrowLeft, Save } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export default function PaymentMethodsCreate({ auth }) {
+  const { t } = useTranslation();
   const { data, setData, post, processing, errors } = useForm({
     nama: '',
     slug: '',
@@ -19,7 +21,7 @@ export default function PaymentMethodsCreate({ auth }) {
 
   return (
     <AuthenticatedLayout auth={auth}>
-      <Head title="Tambah Metode Pembayaran" />
+      <Head title={t('general.create')} />
       <div className="flex-1 flex flex-col gap-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
           <div className="flex items-center gap-3">
@@ -30,10 +32,10 @@ export default function PaymentMethodsCreate({ auth }) {
             </Link>
             <div>
               <h2 className="text-xl md:text-2xl font-black tracking-tight">
-                Tambah <span className="text-primary italic">Metode Pembayaran</span>
+                <span>{t('general.create')}</span>
               </h2>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-                Tambah metode pembayaran baru
+                {t('admin.payment_methods')}
               </p>
             </div>
           </div>
@@ -45,7 +47,7 @@ export default function PaymentMethodsCreate({ auth }) {
         >
           <Card className="bg-white dark:bg-slate-900 border-none shadow-sm rounded-xl">
             <CardHeader>
-              <CardTitle className="text-sm font-bold">Informasi Metode Pembayaran</CardTitle>
+              <CardTitle className="text-sm font-bold">{t('admin.payment_methods')}</CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
@@ -56,7 +58,7 @@ export default function PaymentMethodsCreate({ auth }) {
                   <Input
                     value={data.nama}
                     onChange={(e) => setData('nama', e.target.value)}
-                    placeholder="Masukkan nama metode"
+                    placeholder={t('admin.payment_methods')}
                   />
                   {errors.nama && (
                     <p className="text-[10px] text-rose-500 mt-1">{errors.nama}</p>
@@ -80,11 +82,11 @@ export default function PaymentMethodsCreate({ auth }) {
                 <div className="flex items-center gap-2 pt-2">
                   <Button type="submit" disabled={processing} className="h-9 text-xs">
                     <Save className="w-3.5 h-3.5" />
-                    {processing ? 'Menyimpan...' : 'Simpan'}
+                    {processing ? t('general.loading') : t('general.save')}
                   </Button>
                   <Link href={route('admin.payment-methods.index')}>
                     <Button type="button" variant="outline" className="h-9 text-xs">
-                      Batal
+                      {t('general.cancel')}
                     </Button>
                   </Link>
                 </div>

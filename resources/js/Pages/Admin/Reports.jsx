@@ -8,8 +8,10 @@ import { DayPicker } from 'react-day-picker';
 import { format, startOfMonth, endOfMonth, startOfDay, endOfDay } from 'date-fns';
 import { id } from 'date-fns/locale';
 import 'react-day-picker/style.css';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export default function Reports({ auth }) {
+  const { t } = useTranslation();
   const [range, setRange] = useState(undefined);
   const [showPicker, setShowPicker] = useState(false);
 
@@ -43,12 +45,12 @@ export default function Reports({ auth }) {
 
   return (
     <AuthenticatedLayout>
-      <Head title="Laporan" />
+      <Head title={t('admin.reports')} />
 
       <div className="flex-1 flex flex-col gap-4">
         <div>
           <h2 className="text-xl md:text-2xl font-black text-slate-800 dark:text-white tracking-tight">
-            Laporan <span className="text-primary italic">Pembayaran</span>
+            {t('admin.reports')}
           </h2>
           <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
             Generate dan cetak laporan transaksi pembayaran.
@@ -73,7 +75,7 @@ export default function Reports({ auth }) {
             {/* Date Range Display + Picker */}
             <div>
               <label className="text-xs font-bold text-slate-700 dark:text-slate-300 mb-2 block">
-                Rentang Tanggal
+                {t('dt.date_range')}
               </label>
 
               <div className="relative">
@@ -106,11 +108,11 @@ export default function Reports({ auth }) {
                 {/* Quick select buttons */}
                 <div className="flex flex-wrap gap-1.5 mt-2">
                   {[
-                    { label: 'Hari ini', fn: () => { const d = new Date(); setQuickRange(d, d); } },
-                    { label: '7 hari', fn: () => { const d = new Date(); const w = new Date(); w.setDate(w.getDate() - 6); setQuickRange(w, d); } },
-                    { label: '30 hari', fn: () => { const d = new Date(); const m = new Date(); m.setDate(m.getDate() - 29); setQuickRange(m, d); } },
-                    { label: 'Bulan ini', fn: () => { const d = new Date(); setQuickRange(startOfMonth(d), d); } },
-                    { label: 'Bulan lalu', fn: () => { const d = new Date(); const lm = startOfMonth(new Date(d.getFullYear(), d.getMonth() - 1, 1)); setQuickRange(lm, endOfMonth(lm)); } },
+                    { label: t('dt.today'), fn: () => { const d = new Date(); setQuickRange(d, d); } },
+                    { label: t('dt.7_days'), fn: () => { const d = new Date(); const w = new Date(); w.setDate(w.getDate() - 6); setQuickRange(w, d); } },
+                    { label: t('dt.30_days'), fn: () => { const d = new Date(); const m = new Date(); m.setDate(m.getDate() - 29); setQuickRange(m, d); } },
+                    { label: t('dt.this_month'), fn: () => { const d = new Date(); setQuickRange(startOfMonth(d), d); } },
+                    { label: t('dt.last_month'), fn: () => { const d = new Date(); const lm = startOfMonth(new Date(d.getFullYear(), d.getMonth() - 1, 1)); setQuickRange(lm, endOfMonth(lm)); } },
                   ].map((preset) => (
                     <button
                       key={preset.label}
@@ -187,7 +189,7 @@ export default function Reports({ auth }) {
                 disabled={processing || !range?.from || !range?.to}
               >
                 <Printer className="w-4 h-4" />
-                Cetak Laporan
+                {t('general.print')}
               </Button>
             </div>
           </CardContent>

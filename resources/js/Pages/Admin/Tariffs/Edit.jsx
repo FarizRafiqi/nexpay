@@ -4,8 +4,10 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ArrowLeft, Save } from 'lucide-react';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export default function Edit({ auth, tariff }) {
+    const { t } = useTranslation();
     const { data, setData, put, processing, errors } = useForm({
         daya: tariff.daya,
         tarif_per_kwh: tariff.tarif_per_kwh,
@@ -18,18 +20,18 @@ export default function Edit({ auth, tariff }) {
 
     return (
         <AuthenticatedLayout auth={auth}>
-            <Head title="Edit Tarif" />
+            <Head title={t('general.edit')} />
 
             <div className="flex-1 flex flex-col gap-4">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h2 className="text-xl md:text-2xl font-black tracking-tight">Edit Tarif</h2>
-                        <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Ubah tarif listrik #{tariff.id}</p>
+                        <h2 className="text-xl md:text-2xl font-black tracking-tight">{t('general.edit')}</h2>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{t('admin.tariffs')} #{tariff.id}</p>
                     </div>
                     <Link href={route('admin.tariffs.index')}>
                         <Button variant="outline">
                             <ArrowLeft className="w-4 h-4" />
-                            Kembali
+                            {t('general.back')}
                         </Button>
                     </Link>
                 </div>
@@ -60,10 +62,10 @@ export default function Edit({ auth, tariff }) {
                             <div className="flex items-center gap-2 pt-2">
                                 <Button type="submit" disabled={processing}>
                                     <Save className="w-4 h-4" />
-                                    Update
+                                    {t('general.update')}
                                 </Button>
                                 <Link href={route('admin.tariffs.index')}>
-                                    <Button type="button" variant="ghost">Batal</Button>
+                                    <Button type="button" variant="ghost">{t('general.cancel')}</Button>
                                 </Link>
                             </div>
                         </form>

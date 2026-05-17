@@ -19,6 +19,14 @@ import {
   Moon,
   ChevronRight,
   X,
+  CheckCircle,
+  XCircle,
+  UserPlus,
+  UserX,
+  Trash2,
+  RefreshCw,
+  Shield,
+  BellRing,
 } from "lucide-react"
 
 import {
@@ -30,21 +38,40 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import Toast from "@/components/Toast"
 import Breadcrumb from "@/components/Breadcrumb"
+import LanguageSwitcher from "@/components/LanguageSwitcher"
 import { cn } from "@/lib/utils"
+import { useTranslation } from "@/hooks/useTranslation"
 
 const SIDEBAR_WIDTH = "280px"
 
 function NotificationBell() {
   const { notifications } = usePage().props
+  const { t } = useTranslation()
   const [open, setOpen] = React.useState(false)
   const [items, setItems] = React.useState(notifications || [])
   const ref = React.useRef(null)
+  const [marking, setMarking] = React.useState(null)
+
+  const typeConfig = {
+    payment_success:     { icon: CheckCircle,  bg: "bg-emerald-100 dark:bg-emerald-900/30",  color: "text-emerald-600 dark:text-emerald-400" },
+    payment_failed:      { icon: XCircle,    bg: "bg-red-100 dark:bg-red-900/30",        color: "text-red-600 dark:text-red-400" },
+    user_registered:     { icon: UserPlus,   bg: "bg-blue-100 dark:bg-blue-900/30",       color: "text-blue-600 dark:text-blue-400" },
+    user_deleted:        { icon: UserX,      bg: "bg-red-100 dark:bg-red-900/30",        color: "text-red-600 dark:text-red-400" },
+    payment_deleted:     { icon: Trash2,     bg: "bg-orange-100 dark:bg-orange-900/30",   color: "text-orange-600 dark:text-orange-400" },
+    bill_status_changed: { icon: RefreshCw,  bg: "bg-amber-100 dark:bg-amber-900/30",     color: "text-amber-600 dark:text-amber-400" },
+    level_permission_changed: { icon: Shield, bg: "bg-purple-100 dark:bg-purple-900/30",  color: "text-purple-600 dark:text-purple-400" },
+    payment_method_changed: { icon: CreditCard, bg: "bg-teal-100 dark:bg-teal-900/30",    color: "text-teal-600 dark:text-teal-400" },
+  }
+  const defaultType = { icon: BellRing, bg: "bg-primary/10", color: "text-primary" }
+
+  function getTypeConfig(n) {
+    return typeConfig[n.type] || defaultType
+  }
 
   React.useEffect(() => {
     setItems(notifications || [])
   }, [notifications])
 
-  // Poll for new notifications every 30s
   React.useEffect(() => {
     const timer = setInterval(() => {
       fetch(window.location.origin + '/admin/notifications/unread', {
@@ -65,12 +92,26 @@ function NotificationBell() {
     return () => document.removeEventListener('mousedown', handleClick)
   }, [])
 
+  function handleMarkAsRead(id) {
+    setMarking(id)
+    fetch(`/admin/notifications/${id}/read`, { method: 'POST', headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+      .then(r => { if (r.ok) setItems(prev => prev.filter(n => n.id !== id)) })
+      .catch(() => {})
+      .finally(() => setMarking(null))
+  }
+
+  function handleMarkAllAsRead() {
+    fetch('/admin/notifications/read-all', { method: 'POST', headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+      .then(r => { if (r.ok) setItems([]) })
+      .catch(() => {})
+  }
+
   return (
     <div className="relative" ref={ref}>
-      <button
-        onClick={() => setOpen(!open)}
-        className="relative p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-primary transition-all duration-300"
-      >
+        <button
+          onClick={() => setOpen(!open)}
+          className="relative p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-primary transition-all duration-300 cursor-pointer"
+        >
         <Bell className="w-4 h-4" />
         {items.length > 0 && (
           <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-rose-500 text-white text-[8px] font-bold flex items-center justify-center ring-2 ring-white dark:ring-slate-900">
@@ -82,36 +123,54 @@ function NotificationBell() {
       {open && (
         <div className="absolute right-0 top-full mt-2 w-80 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xl z-50 animate-in fade-in slide-in-from-top-1">
           <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 dark:border-slate-800">
-            <span className="text-xs font-bold text-slate-800 dark:text-white">Notifikasi</span>
-            <button onClick={() => setOpen(false)} className="p-0.5 rounded hover:bg-slate-100 dark:hover:bg-slate-800">
-              <X className="w-3.5 h-3.5 text-slate-400" />
-            </button>
-          </div>
-          <div className="max-h-72 overflow-y-auto">
-            {items.length === 0 ? (
-              <div className="px-4 py-8 text-center">
-                <Bell className="w-6 h-6 text-slate-300 dark:text-slate-600 mx-auto mb-2" />
-                <p className="text-[11px] text-slate-400 dark:text-slate-500">Belum ada notifikasi</p>
+            <span className="text-xs font-bold text-slate-800 dark:text-white">{t('admin.notifications')}</span>
+            <div className="flex items-center gap-1">
+              {items.length > 0 && (
+                <button
+                  onClick={handleMarkAllAsRead}
+                  className="text-[9px] font-bold text-primary hover:text-primary/80 px-2 py-1 rounded hover:bg-primary/5 transition-colors"
+                >
+                    Tandai Semua Dibaca
+                  </button>
+                )}
+                <button onClick={() => setOpen(false)} className="p-0.5 rounded hover:bg-slate-100 dark:hover:bg-slate-800">
+                  <X className="w-3.5 h-3.5 text-slate-400" />
+                </button>
               </div>
-            ) : (
-              items.map((n) => (
-                <div key={n.id} className="flex items-start gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors border-b border-slate-50 dark:border-slate-800/50 last:border-0">
-                  <div className="w-7 h-7 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 mt-0.5">
-                    <Activity className="w-3.5 h-3.5" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-bold text-slate-800 dark:text-white">{n.title}</p>
-                    <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed line-clamp-2">{n.description}</p>
-                    <p className="text-[9px] text-slate-400 dark:text-slate-500 mt-1">{n.time}</p>
-                  </div>
+            </div>
+            <div className="max-h-72 overflow-y-auto">
+              {items.length === 0 ? (
+                <div className="px-4 py-8 text-center">
+                  <Bell className="w-6 h-6 text-slate-300 dark:text-slate-600 mx-auto mb-2" />
+                  <p className="text-[11px] text-slate-400 dark:text-slate-500">{t('notification.empty')}</p>
                 </div>
-              ))
-            )}
-          </div>
-          <div className="px-4 py-2.5 border-t border-slate-100 dark:border-slate-800 text-center">
-            <Link href={route('admin.activity-logs.index')} className="text-[10px] font-bold text-primary hover:text-primary/80 transition-colors">
-              Lihat Semua Aktivitas
-            </Link>
+              ) : (
+                items.map((n) => {
+                  const cfg = getTypeConfig(n)
+                  const Icon = cfg.icon
+                  return (
+                    <div
+                      key={n.id}
+                      onClick={() => handleMarkAsRead(n.id)}
+                      className="flex items-start gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors border-b border-slate-50 dark:border-slate-800/50 last:border-0 cursor-pointer"
+                    >
+                      <div className={`w-7 h-7 rounded-lg ${cfg.bg} ${cfg.color} flex items-center justify-center shrink-0 mt-0.5`}>
+                        <Icon className="w-3.5 h-3.5" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-bold text-slate-800 dark:text-white">{n.title}</p>
+                        <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed line-clamp-2">{n.description}</p>
+                        <p className="text-[9px] text-slate-400 dark:text-slate-500 mt-1">{n.time}</p>
+                      </div>
+                    </div>
+                  )
+                })
+              )}
+            </div>
+            <div className="px-4 py-2.5 border-t border-slate-100 dark:border-slate-800 text-center">
+              <Link href={route('admin.notifications.index')} className="text-[10px] font-bold text-primary hover:text-primary/80 transition-colors">
+                {t('notification.title')}
+              </Link>
           </div>
         </div>
       )}
@@ -213,6 +272,7 @@ function SidebarNavItem({ item }) {
 
 export default function AuthenticatedLayout({ children }) {
   const { auth } = usePage().props
+  const { t } = useTranslation()
   const [isDark, setIsDark] = React.useState(
     () => typeof window !== "undefined" && document.documentElement.classList.contains("dark")
   )
@@ -243,39 +303,39 @@ export default function AuthenticatedLayout({ children }) {
   }, [])
 
   const navigation = [
-    { name: "Dashboard", icon: LayoutDashboard, route: "admin.dashboard" },
+    { name: t('admin.dashboard'), icon: LayoutDashboard, route: "admin.dashboard" },
     {
-      name: "Master Data",
+      name: t('admin.menu'),
       icon: ShieldCheck,
       children: [
-        { name: "Pelanggan PLN", route: "admin.pln-customers.index" },
-        { name: "Penggunaan", route: "admin.usages.index" },
-        { name: "Tagihan", route: "admin.bills.index" },
-        { name: "Tarif", route: "admin.tariffs.index" },
-        { name: "Level", route: "admin.levels.index" },
+        { name: t('admin.customers'), route: "admin.pln-customers.index" },
+        { name: t('admin.usage'), route: "admin.usages.index" },
+        { name: t('admin.bills'), route: "admin.bills.index" },
+        { name: t('admin.tariffs'), route: "admin.tariffs.index" },
+        { name: t('admin.levels'), route: "admin.levels.index" },
       ],
     },
     {
-      name: "Transaksi",
+      name: t('admin.transactions'),
       icon: CreditCard,
       children: [
-        { name: "Pembayaran", route: "admin.payments.index" },
-        { name: "Metode Pembayaran", route: "admin.payment-methods.index" },
+        { name: t('admin.payments'), route: "admin.payments.index" },
+        { name: t('admin.payment_methods'), route: "admin.payment-methods.index" },
       ],
     },
     {
-      name: "Pajak",
+      name: t('admin.tax_management'),
       icon: Percent,
       children: [
-        { name: "Tipe Pajak", route: "admin.tax-types.index" },
-        { name: "Tarif Pajak", route: "admin.tax-rates.index" },
+        { name: t('admin.tax_types'), route: "admin.tax-types.index" },
+        { name: t('admin.tax_rates'), route: "admin.tax-rates.index" },
       ],
     },
-    { name: "Data Users", icon: Users, route: "admin.users.index" },
-    { name: "Permission", icon: ShieldCheck, route: "admin.permissions.index" },
-    { name: "Laporan", icon: FileText, route: "admin.reports" },
-    { name: "Log Aktivitas", icon: Activity, route: "admin.activity-logs.index" },
-    { name: "Pengaturan", icon: Settings, route: "admin.settings" },
+    { name: t('admin.users'), icon: Users, route: "admin.users.index" },
+    { name: t('admin.permissions'), icon: ShieldCheck, route: "admin.permissions.index" },
+    { name: t('admin.reports'), icon: FileText, route: "admin.reports" },
+    { name: t('admin.activity_logs'), icon: Activity, route: "admin.activity-logs.index" },
+    { name: t('admin.settings'), icon: Settings, route: "admin.settings" },
   ]
 
   return (
@@ -311,7 +371,7 @@ export default function AuthenticatedLayout({ children }) {
             className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 transition-all duration-200"
           >
             <LogOut className="w-5 h-5" />
-            <span>Keluar</span>
+            <span>{t('admin.logout')}</span>
           </button>
         </div>
 
@@ -327,8 +387,8 @@ export default function AuthenticatedLayout({ children }) {
                 <LogOut className="w-5 h-5 text-red-500" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-slate-800 dark:text-white">Konfirmasi Keluar</h3>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Apakah Anda yakin ingin keluar?</p>
+                <h3 className="text-sm font-bold text-slate-800 dark:text-white">{t('admin.logout')}</h3>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{t('general.confirm_delete')}</p>
               </div>
             </div>
             <div className="flex items-center gap-2 justify-end">
@@ -337,7 +397,7 @@ export default function AuthenticatedLayout({ children }) {
                 onClick={() => document.getElementById('logout-dialog')?.close()}
                 className="px-4 py-2 rounded-lg text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               >
-                Batal
+                {t('general.cancel')}
               </button>
               <Link
                 href={route("logout")}
@@ -345,7 +405,7 @@ export default function AuthenticatedLayout({ children }) {
                 as="button"
                 className="px-4 py-2 rounded-lg text-xs font-bold bg-red-500 hover:bg-red-600 text-white transition-colors"
               >
-                Ya, Keluar
+                {t('general.yes')}, {t('admin.logout')}
               </Link>
             </div>
           </div>
@@ -361,7 +421,7 @@ export default function AuthenticatedLayout({ children }) {
         <header className={`${stickyHeader ? 'sticky' : ''} top-0 z-20 flex h-16 shrink-0 items-center gap-4 border-b border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md px-6`}>
           <div className="flex-1">
             <h1 className="text-[10px] font-black text-slate-400 dark:text-slate-600 uppercase tracking-[0.2em]">
-              Admin Dashboard
+              {t('admin.dashboard')}
             </h1>
           </div>
 
@@ -371,7 +431,7 @@ export default function AuthenticatedLayout({ children }) {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input
                 type="text"
-                placeholder="Cari menu atau data..."
+                placeholder={t('general.search')}
                 className="bg-slate-100 dark:bg-slate-800 border-none rounded-xl py-1.5 pl-10 pr-4 text-xs w-48 focus:w-64 focus:ring-2 focus:ring-primary/20 transition-all outline-none"
               />
             </div>
@@ -382,10 +442,13 @@ export default function AuthenticatedLayout({ children }) {
             {/* Dark mode toggle */}
             <button
               onClick={toggleDarkMode}
-              className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-primary transition-all duration-300"
+              className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-primary transition-all duration-300 cursor-pointer"
             >
               {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>
+
+            {/* Language Switcher */}
+            <LanguageSwitcher />
 
             <div className="h-8 w-px bg-slate-200 dark:bg-slate-800" />
 

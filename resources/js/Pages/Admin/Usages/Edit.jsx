@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { ArrowLeft, Save } from 'lucide-react';
 import { motion } from 'framer-motion';
 import SearchableSelect from '@/components/SearchableSelect';
+import { useTranslation } from '@/hooks/useTranslation';
 
 const months = [
   { value: 1, label: 'Januari' },
@@ -23,6 +24,7 @@ const months = [
 ];
 
 export default function UsagesEdit({ auth, usage, customers }) {
+  const { t } = useTranslation();
   const { data, setData, put, processing, errors } = useForm({
     id_pelanggan: usage.id_pelanggan || '',
     bulan: usage.bulan || '',
@@ -38,7 +40,7 @@ export default function UsagesEdit({ auth, usage, customers }) {
 
   return (
     <AuthenticatedLayout auth={auth}>
-      <Head title="Edit Penggunaan" />
+      <Head title={t('general.edit')} />
       <div className="flex-1 flex flex-col gap-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
           <div className="flex items-center gap-3">
@@ -49,7 +51,7 @@ export default function UsagesEdit({ auth, usage, customers }) {
             </Link>
             <div>
               <h2 className="text-xl md:text-2xl font-black tracking-tight">
-                Edit <span className="text-primary italic">Penggunaan</span>
+                {t('general.edit')} <span className="text-primary italic">{t('admin.usage')}</span>
               </h2>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
                 #{usage.id}
@@ -64,13 +66,13 @@ export default function UsagesEdit({ auth, usage, customers }) {
         >
           <Card className="bg-white dark:bg-slate-900 border-none shadow-sm rounded-xl">
             <CardHeader>
-              <CardTitle className="text-sm font-bold">Edit Informasi Penggunaan</CardTitle>
+              <CardTitle className="text-sm font-bold">{t('general.edit')} {t('admin.usage')}</CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
                 <div>
                   <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-1.5 block">
-                    ID Pelanggan
+                    {t('dt.customer_name')}
                   </label>
                   <SearchableSelect
                     value={data.id_pelanggan}
@@ -79,8 +81,8 @@ export default function UsagesEdit({ auth, usage, customers }) {
                       value: c.id,
                       label: `${c.nama_pelanggan} (${c.nomor_meter})`,
                     }))}
-                    placeholder="Pilih Pelanggan"
-                    searchPlaceholder="Cari pelanggan..."
+                    placeholder={t('dt.customer_name')}
+                    searchPlaceholder={t('dt.search')}
                   />
                   {errors.id_pelanggan && (
                     <p className="text-[10px] text-rose-500 mt-1">{errors.id_pelanggan}</p>
@@ -89,14 +91,14 @@ export default function UsagesEdit({ auth, usage, customers }) {
 
                 <div>
                   <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-1.5 block">
-                    Bulan
+                    {t('dt.bulan')}
                   </label>
                   <select
                     value={data.bulan}
                     onChange={(e) => setData('bulan', e.target.value)}
                     className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring md:text-sm"
                   >
-                    <option value="">Pilih Bulan</option>
+                    <option value="">{t('dt.bulan')}</option>
                     {months.map((month) => (
                       <option key={month.value} value={month.value}>{month.label}</option>
                     ))}
@@ -108,12 +110,12 @@ export default function UsagesEdit({ auth, usage, customers }) {
 
                 <div>
                   <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-1.5 block">
-                    Tahun
+                    {t('dt.tahun')}
                   </label>
                   <Input
                     value={data.tahun}
                     onChange={(e) => setData('tahun', e.target.value)}
-                    placeholder="Masukkan tahun"
+                    placeholder={t('dt.tahun')}
                     type="number"
                   />
                   {errors.tahun && (
@@ -123,12 +125,12 @@ export default function UsagesEdit({ auth, usage, customers }) {
 
                 <div>
                   <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-1.5 block">
-                    Meter Awal
+                    {t('dt.meter_awal')}
                   </label>
                   <Input
                     value={data.meter_awal}
                     onChange={(e) => setData('meter_awal', e.target.value)}
-                    placeholder="Masukkan meter awal"
+                    placeholder={t('dt.meter_awal')}
                     type="number"
                   />
                   {errors.meter_awal && (
@@ -138,12 +140,12 @@ export default function UsagesEdit({ auth, usage, customers }) {
 
                 <div>
                   <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-1.5 block">
-                    Meter Akhir
+                    {t('dt.meter_akhir')}
                   </label>
                   <Input
                     value={data.meter_akhir}
                     onChange={(e) => setData('meter_akhir', e.target.value)}
-                    placeholder="Masukkan meter akhir"
+                    placeholder={t('dt.meter_akhir')}
                     type="number"
                   />
                   {errors.meter_akhir && (
@@ -154,11 +156,11 @@ export default function UsagesEdit({ auth, usage, customers }) {
                 <div className="flex items-center gap-2 pt-2">
                   <Button type="submit" disabled={processing} className="h-9 text-xs">
                     <Save className="w-3.5 h-3.5" />
-                    {processing ? 'Menyimpan...' : 'Simpan'}
+                    {processing ? t('general.save') : t('general.save')}
                   </Button>
                   <Link href={route('admin.usages.index')}>
                     <Button type="button" variant="outline" className="h-9 text-xs">
-                      Batal
+                      {t('general.cancel')}
                     </Button>
                   </Link>
                 </div>

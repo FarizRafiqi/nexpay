@@ -5,18 +5,20 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Activity, Search, Info, AlertCircle, UserCheck, Database } from 'lucide-react';
 import Pagination from '@/components/Pagination';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export default function ActivityLogs({ auth, activityLogs }) {
+	const { t } = useTranslation();
 	const logs = activityLogs?.data || [];
 
 	return (
 		<AuthenticatedLayout>
-			<Head title="Log Aktivitas" />
+			<Head title={t('admin.activity_logs')} />
 
 			<div className="flex-1 flex flex-col gap-4">
 				<div>
 					<h2 className="text-xl md:text-2xl font-black text-slate-800 dark:text-white tracking-tight">
-						Log <span className="text-primary italic">Aktivitas</span>
+						{t('admin.activity_logs')}
 					</h2>
 					<p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
 						Monitor seluruh aktivitas yang terjadi dalam sistem.
@@ -39,13 +41,13 @@ export default function ActivityLogs({ auth, activityLogs }) {
 							<table className="w-full">
 								<thead>
 									<tr className="border-b border-slate-100 dark:border-slate-800">
-										<th className="text-left text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-4 py-3">ID</th>
-										<th className="text-left text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-4 py-3">ID User</th>
-										<th className="text-left text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-4 py-3">Tabel Ref</th>
-										<th className="text-left text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-4 py-3">ID Ref</th>
-										<th className="text-left text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-4 py-3">Deskripsi</th>
-										<th className="text-left text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-4 py-3">Dibuat Pada</th>
-										<th className="text-left text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-4 py-3">Diubah Pada</th>
+										<th className="text-left text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-4 py-3">{t('dt.id')}</th>
+										<th className="text-left text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-4 py-3">{t('dt.user_id')}</th>
+										<th className="text-left text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-4 py-3">{t('dt.table_ref')}</th>
+										<th className="text-left text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-4 py-3">{t('dt.ref_id')}</th>
+										<th className="text-left text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-4 py-3">{t('dt.description')}</th>
+										<th className="text-left text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-4 py-3">{t('dt.created_at')}</th>
+										<th className="text-left text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-4 py-3">{t('dt.updated_at')}</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -98,7 +100,7 @@ export default function ActivityLogs({ auth, activityLogs }) {
 											<td colSpan={7} className="px-4 py-12 text-center">
 												<div className="flex flex-col items-center gap-2">
 													<Activity className="w-8 h-8 text-slate-300 dark:text-slate-600" />
-													<p className="text-sm font-medium text-slate-400 dark:text-slate-500">Belum ada data log aktivitas</p>
+													<p className="text-sm font-medium text-slate-400 dark:text-slate-500">{t('dt.no_data')}</p>
 												</div>
 											</td>
 										</tr>

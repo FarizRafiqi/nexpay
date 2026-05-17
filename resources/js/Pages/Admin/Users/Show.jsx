@@ -4,29 +4,31 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Pencil, Mail, User, AtSign, Shield, Calendar } from 'lucide-react';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export default function Show({ auth, user }) {
+    const { t } = useTranslation();
     return (
         <AuthenticatedLayout auth={auth}>
-            <Head title="Detail User" />
+            <Head title={t('admin.users')} />
 
             <div className="flex-1 flex flex-col gap-4">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h2 className="text-xl md:text-2xl font-black tracking-tight">Detail User</h2>
+                        <h2 className="text-xl md:text-2xl font-black tracking-tight">{t('admin.users')}</h2>
                         <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Informasi lengkap pengguna</p>
                     </div>
                     <div className="flex items-center gap-2">
                         <Link href={route('admin.users.edit', user.id)}>
                             <Button variant="outline">
                                 <Pencil className="w-4 h-4" />
-                                Edit
+                                {t('general.edit')}
                             </Button>
                         </Link>
                         <Link href={route('admin.users.index')}>
                             <Button variant="outline">
                                 <ArrowLeft className="w-4 h-4" />
-                                Kembali
+                                {t('general.back')}
                             </Button>
                         </Link>
                     </div>
@@ -51,7 +53,7 @@ export default function Show({ auth, user }) {
                                     <User className="w-4 h-4" />
                                 </div>
                                 <div>
-                                    <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Nama</p>
+                                    <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{t('dt.full_name')}</p>
                                     <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">{user.nama}</p>
                                 </div>
                             </div>
@@ -61,7 +63,7 @@ export default function Show({ auth, user }) {
                                     <AtSign className="w-4 h-4" />
                                 </div>
                                 <div>
-                                    <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Username</p>
+                                    <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{t('dt.username')}</p>
                                     <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">{user.username}</p>
                                 </div>
                             </div>
@@ -71,7 +73,7 @@ export default function Show({ auth, user }) {
                                     <Mail className="w-4 h-4" />
                                 </div>
                                 <div>
-                                    <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Email</p>
+                                    <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{t('dt.email')}</p>
                                     <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">{user.email}</p>
                                 </div>
                             </div>
@@ -81,7 +83,7 @@ export default function Show({ auth, user }) {
                                     <Shield className="w-4 h-4" />
                                 </div>
                                 <div>
-                                    <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Level</p>
+                                    <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{t('dt.level')}</p>
                                     {user.level ? (
                                         <Badge variant="secondary" className="text-[10px] font-bold mt-0.5">{user.level.level}</Badge>
                                     ) : (
@@ -95,7 +97,7 @@ export default function Show({ auth, user }) {
                                     <Calendar className="w-4 h-4" />
                                 </div>
                                 <div>
-                                    <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Bergabung</p>
+                                    <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{t('dt.joined')}</p>
                                     <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">
                                       {user.created_at
                                         ? new Date(user.created_at).toLocaleDateString('id-ID', {

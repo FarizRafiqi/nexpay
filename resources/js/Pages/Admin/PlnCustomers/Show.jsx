@@ -4,20 +4,22 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, User } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export default function PlnCustomersShow({ auth, plnCustomer }) {
+  const { t } = useTranslation();
   const details = [
-    { label: 'ID Pelanggan', value: plnCustomer.id },
-    { label: 'Nama Pelanggan', value: plnCustomer.nama_pelanggan },
-    { label: 'Nomor Meter', value: plnCustomer.nomor_meter },
-    { label: 'Alamat', value: plnCustomer.alamat },
-    { label: 'Tarif / Daya', value: plnCustomer.tariff?.daya || '-' },
-    { label: 'Tarif per kWh', value: plnCustomer.tariff?.tarif_per_kwh ? `Rp ${parseInt(plnCustomer.tariff.tarif_per_kwh).toLocaleString('id-ID')}` : '-' },
+    { label: 'ID', value: plnCustomer.id },
+    { label: t('dt.customer_name'), value: plnCustomer.nama_pelanggan },
+    { label: t('dt.nomor_meter'), value: plnCustomer.nomor_meter },
+    { label: t('dt.alamat'), value: plnCustomer.alamat },
+    { label: t('dt.daya'), value: plnCustomer.tariff?.daya || '-' },
+    { label: t('dt.tarif_per_kwh'), value: plnCustomer.tariff?.tarif_per_kwh ? `Rp ${parseInt(plnCustomer.tariff.tarif_per_kwh).toLocaleString('id-ID')}` : '-' },
   ];
 
   return (
     <AuthenticatedLayout auth={auth}>
-      <Head title="Detail Pelanggan" />
+      <Head title={t('admin.customers')} />
       <div className="flex-1 flex flex-col gap-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
           <div className="flex items-center gap-3">
@@ -28,7 +30,7 @@ export default function PlnCustomersShow({ auth, plnCustomer }) {
             </Link>
             <div>
               <h2 className="text-xl md:text-2xl font-black tracking-tight">
-                Detail <span className="text-primary italic">Pelanggan</span>
+                {t('general.show')} <span className="text-primary italic">{t('admin.customers')}</span>
               </h2>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
                 {plnCustomer.nama_pelanggan}
@@ -45,7 +47,7 @@ export default function PlnCustomersShow({ auth, plnCustomer }) {
             <CardHeader>
               <CardTitle className="text-sm font-bold flex items-center gap-2">
                 <User className="w-4 h-4 text-primary" />
-                Informasi Pelanggan
+                {t('admin.customers')}
               </CardTitle>
             </CardHeader>
             <CardContent>

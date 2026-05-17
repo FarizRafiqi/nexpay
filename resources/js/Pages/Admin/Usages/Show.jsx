@@ -4,22 +4,24 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Activity } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export default function UsagesShow({ auth, usage }) {
+  const { t } = useTranslation();
   const details = [
-    { label: 'ID Penggunaan', value: usage.id },
-    { label: 'ID Pelanggan', value: usage.id_pelanggan },
-    { label: 'Nama Pelanggan', value: usage.pln_customer?.nama_pelanggan || '-' },
-    { label: 'Bulan', value: usage.bulan },
-    { label: 'Tahun', value: usage.tahun },
-    { label: 'Meter Awal', value: usage.meter_awal },
-    { label: 'Meter Akhir', value: usage.meter_akhir },
-    { label: 'Jumlah Pemakaian', value: usage.jumlah },
+    { label: t('dt.id'), value: usage.id },
+    { label: t('dt.customer_name'), value: usage.id_pelanggan },
+    { label: t('dt.customer_name'), value: usage.pln_customer?.nama_pelanggan || '-' },
+    { label: t('dt.bulan'), value: usage.bulan },
+    { label: t('dt.tahun'), value: usage.tahun },
+    { label: t('dt.meter_awal'), value: usage.meter_awal },
+    { label: t('dt.meter_akhir'), value: usage.meter_akhir },
+    { label: t('dt.jumlah'), value: usage.jumlah },
   ];
 
   return (
     <AuthenticatedLayout auth={auth}>
-      <Head title="Detail Penggunaan" />
+      <Head title={t('admin.usage')} />
       <div className="flex-1 flex flex-col gap-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
           <div className="flex items-center gap-3">
@@ -30,7 +32,7 @@ export default function UsagesShow({ auth, usage }) {
             </Link>
             <div>
               <h2 className="text-xl md:text-2xl font-black tracking-tight">
-                Detail <span className="text-primary italic">Penggunaan</span>
+                {t('general.show')} <span className="text-primary italic">{t('admin.usage')}</span>
               </h2>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
                 #{usage.id}
@@ -47,7 +49,7 @@ export default function UsagesShow({ auth, usage }) {
             <CardHeader>
               <CardTitle className="text-sm font-bold flex items-center gap-2">
                 <Activity className="w-4 h-4 text-primary" />
-                Informasi Penggunaan
+                {t('admin.usage')}
               </CardTitle>
             </CardHeader>
             <CardContent>

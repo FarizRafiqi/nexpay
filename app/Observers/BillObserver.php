@@ -4,15 +4,10 @@ namespace App\Observers;
 
 use App\Models\ActivityLog;
 use App\Models\Bill;
+use App\Services\NotificationService;
 
 class BillObserver
 {
-    /**
-     * Handle the Bill "created" event.
-     *
-     * @param  \App\Models\Bill  $bill
-     * @return void
-     */
     public function created(Bill $bill)
     {
         ActivityLog::create([
@@ -23,12 +18,6 @@ class BillObserver
         ]);
     }
 
-    /**
-     * Handle the Bill "updated" event.
-     *
-     * @param  \App\Models\Bill  $bill
-     * @return void
-     */
     public function updated(Bill $bill)
     {
         ActivityLog::create([
@@ -37,14 +26,16 @@ class BillObserver
             'id_referensi' => $bill->id,
             'deskripsi' => 'Memperbarui data tagihan listrik'
         ]);
+
+        if ($bill->isDirty('status')) {
+            NotificationService::billStatusChanged(
+                $bill,
+                $bill->getOriginal('status'),
+                $bill->status
+            );
+        }
     }
 
-    /**
-     * Handle the Bill "deleted" event.
-     *
-     * @param  \App\Models\Bill  $bill
-     * @return void
-     */
     public function deleted(Bill $bill)
     {
         ActivityLog::create([
@@ -55,12 +46,6 @@ class BillObserver
         ]);
     }
 
-    /**
-     * Handle the Bill "restored" event.
-     *
-     * @param  \App\Models\Bill  $bill
-     * @return void
-     */
     public function restored(Bill $bill)
     {
         ActivityLog::create([
@@ -71,14 +56,7 @@ class BillObserver
         ]);
     }
 
-    /**
-     * Handle the Bill "force deleted" event.
-     *
-     * @param  \App\Models\Bill  $bill
-     * @return void
-     */
     public function forceDeleted(Bill $bill)
     {
-        //
     }
 }

@@ -17,7 +17,8 @@ class IsAdmin
      */
     public function handle(Request $request, Closure $next)
     {
-        if(Auth::user()->id_level === 1 || Auth::user()->id_level === 3){
+        $level = optional($request->user()->level)->level;
+        if (in_array($level, ['administrator', 'bank'])) {
             return $next($request);
         }
         return redirect()->route('home');

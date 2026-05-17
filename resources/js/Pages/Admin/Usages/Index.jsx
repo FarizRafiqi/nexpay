@@ -5,38 +5,40 @@ import { Button } from '@/components/ui/button';
 import { Activity, Plus, Eye, Edit } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Pagination from '@/components/Pagination';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export default function UsagesIndex({ auth, usages }) {
+  const { t } = useTranslation();
   return (
     <AuthenticatedLayout auth={auth}>
-      <Head title="Penggunaan Listrik" />
+      <Head title={t('admin.usage')} />
       <div className="flex-1 flex flex-col gap-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
           <div>
             <h2 className="text-xl md:text-2xl font-black tracking-tight">
-              Penggunaan <span className="text-primary italic">Listrik</span>
+              {t('admin.usage')} <span className="text-primary italic">Listrik</span>
             </h2>
             <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-              Data pemakaian listrik pelanggan
+              {t('admin.usage')}
             </p>
           </div>
           <Link href={route('admin.usages.create')}>
             <Button className="h-9 text-xs">
               <Plus className="w-3.5 h-3.5" />
-              Tambah Penggunaan
+              {t('general.create')}
             </Button>
           </Link>
         </div>
 
         <Card className="bg-white dark:bg-slate-900 border-none shadow-sm rounded-xl">
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-sm font-bold">Riwayat Penggunaan</CardTitle>
+            <CardTitle className="text-sm font-bold">{t('admin.usage')}</CardTitle>
           </CardHeader>
           <CardContent>
             {!usages || (usages.data || []).length === 0 ? (
               <div className="text-center py-12">
                 <Activity className="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
-                <p className="text-[11px] text-slate-500 dark:text-slate-400">Tidak ada data penggunaan</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">{t('dt.no_data')}</p>
               </div>
             ) : (
               <>
@@ -44,13 +46,13 @@ export default function UsagesIndex({ auth, usages }) {
                 <table className="w-full text-left">
                   <thead>
                     <tr className="border-b border-slate-100 dark:border-slate-800">
-                      <th className="text-[10px] font-black uppercase tracking-widest text-slate-400 pb-3 pr-4">ID</th>
-                      <th className="text-[10px] font-black uppercase tracking-widest text-slate-400 pb-3 pr-4">ID Pelanggan</th>
-                      <th className="text-[10px] font-black uppercase tracking-widest text-slate-400 pb-3 pr-4">Bulan</th>
-                      <th className="text-[10px] font-black uppercase tracking-widest text-slate-400 pb-3 pr-4">Tahun</th>
-                      <th className="text-[10px] font-black uppercase tracking-widest text-slate-400 pb-3 pr-4">Meter Awal</th>
-                      <th className="text-[10px] font-black uppercase tracking-widest text-slate-400 pb-3 pr-4">Meter Akhir</th>
-                      <th className="text-[10px] font-black uppercase tracking-widest text-slate-400 pb-3">Jumlah</th>
+                      <th className="text-[10px] font-black uppercase tracking-widest text-slate-400 pb-3 pr-4">{t('dt.id')}</th>
+                      <th className="text-[10px] font-black uppercase tracking-widest text-slate-400 pb-3 pr-4">{t('dt.customer_name')}</th>
+                      <th className="text-[10px] font-black uppercase tracking-widest text-slate-400 pb-3 pr-4">{t('dt.bulan')}</th>
+                      <th className="text-[10px] font-black uppercase tracking-widest text-slate-400 pb-3 pr-4">{t('dt.tahun')}</th>
+                      <th className="text-[10px] font-black uppercase tracking-widest text-slate-400 pb-3 pr-4">{t('dt.meter_awal')}</th>
+                      <th className="text-[10px] font-black uppercase tracking-widest text-slate-400 pb-3 pr-4">{t('dt.meter_akhir')}</th>
+                      <th className="text-[10px] font-black uppercase tracking-widest text-slate-400 pb-3">{t('dt.jumlah')}</th>
                     </tr>
                   </thead>
                   <tbody>

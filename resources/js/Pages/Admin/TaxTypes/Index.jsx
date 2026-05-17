@@ -4,23 +4,25 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Trash2, Percent } from 'lucide-react';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export default function Index({ auth, taxTypes }) {
+    const { t } = useTranslation();
     return (
         <AuthenticatedLayout auth={auth}>
-            <Head title="Tipe Pajak" />
+            <Head title={t('admin.tax_types')} />
 
             <div className="flex-1 flex flex-col gap-4">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h2 className="text-xl md:text-2xl font-black tracking-tight">Tipe Pajak</h2>
-                        <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Kelola tipe pajak yang tersedia</p>
+                        <h2 className="text-xl md:text-2xl font-black tracking-tight">{t('admin.tax_types')}</h2>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{t('admin.tax_management')}</p>
                     </div>
                     <div className="flex items-center gap-2">
                         <Link href={route('admin.tax-rates.index')}>
                             <Button variant="outline">
                                 <Percent className="w-4 h-4" />
-                                Tarif Pajak
+                                {t('admin.tax_rates')}
                             </Button>
                         </Link>
                     </div>
@@ -31,27 +33,27 @@ export default function Index({ auth, taxTypes }) {
                         {taxTypes.length === 0 ? (
                             <div className="flex flex-col items-center justify-center py-16 text-slate-400">
                                 <Percent className="w-12 h-12 mb-3" />
-                                <p className="text-sm font-medium">Belum ada tipe pajak</p>
+                                <p className="text-sm font-medium">{t('dt.no_data')}</p>
                             </div>
                         ) : (
                             <div className="overflow-x-auto">
                                 <table className="w-full">
                                     <thead>
                                         <tr className="border-b border-slate-100 dark:border-slate-800">
-                                            <th className="text-left px-4 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400">ID</th>
-                                            <th className="text-left px-4 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400">Nama</th>
-                                            <th className="text-left px-4 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400">Jumlah Tarif</th>
-                                            <th className="text-right px-4 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400">Aksi</th>
+                                            <th className="text-left px-4 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400">No.</th>
+                                            <th className="text-left px-4 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400">{t('admin.tax_types')}</th>
+                                            <th className="text-left px-4 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400">{t('admin.tax_rates')}</th>
+                                            <th className="text-right px-4 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400">{t('dt.actions')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {taxTypes.map((type) => (
+                                        {taxTypes.map((type, index) => (
                                             <tr key={type.id} className="border-b border-slate-50 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
-                                                <td className="px-4 py-3 text-xs font-mono text-slate-500">#{type.id}</td>
-                                                <td className="px-4 py-3 text-sm font-semibold text-slate-800 dark:text-slate-200">{type.nama}</td>
+                                                <td className="px-4 py-3 text-xs font-mono text-slate-500">{index + 1}</td>
+                                                <td className="px-4 py-3 text-sm font-semibold text-slate-800 dark:text-slate-200">{type.name}</td>
                                                 <td className="px-4 py-3">
                                                     <Badge variant="secondary" className="text-[10px] font-bold">
-                                                        {type.tax_rates_count || 0} tarif
+                                                        {type.tax_rates_count || 0}%
                                                     </Badge>
                                                 </td>
                                                 <td className="px-4 py-3 text-right">

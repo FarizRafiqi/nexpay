@@ -21,8 +21,10 @@ import {
 	ResponsiveContainer
 } from 'recharts';
 import { motion } from 'framer-motion';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export default function Dashboard({ auth, stats, monthly_revenue }) {
+	const { t } = useTranslation();
 	const chartData = (monthly_revenue || []).map((item) => ({
 		month: item.name,
 		amount: item.total
@@ -43,16 +45,16 @@ export default function Dashboard({ auth, stats, monthly_revenue }) {
 
 	return (
 		<AuthenticatedLayout>
-			<Head title="Admin Dashboard" />
+			<Head title={t('admin.dashboard')} />
 
 			<div className="flex-1 flex flex-col gap-4">
 				<div className="flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
 					<div>
 						<h2 className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">
-							Dashboard <span className="text-primary italic">Overview</span>
+							{t('admin.dashboard')} <span className="text-primary italic">Overview</span>
 						</h2>
 						<p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-							Pantau performa bisnis Nexpay Anda hari ini.
+							{t('admin.total_revenue')}
 						</p>
 					</div>
 					<div className="flex items-center gap-2 bg-white dark:bg-slate-900 px-3 py-1.5 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800">
@@ -61,7 +63,7 @@ export default function Dashboard({ auth, stats, monthly_revenue }) {
 								<span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
 								<span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
 							</span>
-							Sistem Aktif
+							{t('admin.payments')}
 						</div>
 					</div>
 				</div>
@@ -73,10 +75,10 @@ export default function Dashboard({ auth, stats, monthly_revenue }) {
 					className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 shrink-0"
 				>
 					{[
-						{ label: 'TOTAL PENDAPATAN', value: stats?.totalPendapatan || 'Rp 0', icon: DollarSign, color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-900/20', trend: '+12.5%' },
-						{ label: 'TRANSAKSI SUKSES', value: stats?.totalPayments || '0', icon: CreditCard, color: 'text-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-900/20', trend: '+5.2%' },
-						{ label: 'TOTAL TAGIHAN', value: stats?.totalBills || '0', icon: Zap, color: 'text-amber-600', bg: 'bg-amber-50 dark:bg-amber-900/20', trend: '+18.1%' },
-						{ label: 'TERTUNDA', value: stats?.unpaidBills || '0', icon: AlertCircle, color: 'text-rose-600', bg: 'bg-rose-50 dark:bg-rose-900/20', trend: '-2.4%' },
+						{ label: t('admin.total_revenue'), value: stats?.totalPendapatan || 'Rp 0', icon: DollarSign, color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-900/20', trend: '+12.5%' },
+						{ label: t('admin.total_payments'), value: stats?.totalPayments || '0', icon: CreditCard, color: 'text-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-900/20', trend: '+5.2%' },
+						{ label: t('admin.paid_bills'), value: stats?.totalBills || '0', icon: Zap, color: 'text-amber-600', bg: 'bg-amber-50 dark:bg-amber-900/20', trend: '+18.1%' },
+						{ label: t('admin.unpaid_bills'), value: stats?.unpaidBills || '0', icon: AlertCircle, color: 'text-rose-600', bg: 'bg-rose-50 dark:bg-rose-900/20', trend: '-2.4%' },
 					].map((stat, i) => (
 						<motion.div key={i} variants={item}>
 							<Card className="border-none shadow-sm dark:shadow-none bg-white dark:bg-slate-900 overflow-hidden group hover:ring-2 hover:ring-primary/20 transition-all duration-300">
@@ -101,8 +103,8 @@ export default function Dashboard({ auth, stats, monthly_revenue }) {
 					<Card className="lg:col-span-2 border-none shadow-sm dark:shadow-none bg-white dark:bg-slate-900 p-4 flex flex-col">
 						<div className="flex items-center justify-between mb-4 shrink-0">
 							<div>
-								<h3 className="text-sm font-bold text-slate-800 dark:text-white">Trend Pendapatan</h3>
-								<p className="text-[10px] text-slate-500 dark:text-slate-400">Analisis statistik bulanan</p>
+								<h3 className="text-sm font-bold text-slate-800 dark:text-white">{t('admin.monthly_revenue')}</h3>
+								<p className="text-[10px] text-slate-500 dark:text-slate-400">{t('admin.monthly_analysis')}</p>
 							</div>
 							<div className="p-1.5 rounded-lg bg-slate-50 dark:bg-slate-800">
 								<TrendingUp className="w-3 h-3 text-primary" />
@@ -158,7 +160,7 @@ export default function Dashboard({ auth, stats, monthly_revenue }) {
 
 					<Card className="border-none shadow-sm dark:shadow-none bg-white dark:bg-slate-900 p-4 flex flex-col">
 						<div className="flex items-center justify-between mb-4 shrink-0">
-							<h3 className="text-sm font-bold text-slate-800 dark:text-white">Aktivitas</h3>
+							<h3 className="text-sm font-bold text-slate-800 dark:text-white">{t('admin.payment_history')}</h3>
 							<div className="p-1.5 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-400">
 								<History className="w-3 h-3" />
 							</div>
@@ -170,7 +172,7 @@ export default function Dashboard({ auth, stats, monthly_revenue }) {
 										<ArrowUpRight className="w-3 h-3" />
 									</div>
 									<div className="flex-1 min-w-0">
-										<p className="text-[10px] font-bold text-slate-700 dark:text-slate-300 truncate">Pembayaran Tagihan</p>
+										<p className="text-[10px] font-bold text-slate-700 dark:text-slate-300 truncate">{t('admin.payments')}</p>
 										<p className="text-[8px] text-slate-400 dark:text-slate-500">ID: 1209384***</p>
 									</div>
 									<div className="text-right shrink-0">
@@ -180,7 +182,7 @@ export default function Dashboard({ auth, stats, monthly_revenue }) {
 							))}
 						</div>
 						<button className="w-full mt-3 py-1.5 rounded-lg border border-slate-100 dark:border-slate-800 text-[9px] font-bold text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shrink-0">
-							Lihat Semua
+							{t('general.view_all', 'Lihat Semua')}
 						</button>
 					</Card>
 				</div>
